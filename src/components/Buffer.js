@@ -9,9 +9,8 @@ import Header from './Header';
 import Userlist from './Userlist';
 
 const Buffer = ({
-  // eslint-disable-next-line react/prop-types
   location: {
-    state: { bid, name },
+    state: { bid },
   },
 }) => {
   return (
@@ -38,6 +37,10 @@ const Buffer = ({
       <MessageInput />
     </Container>
   );
+};
+
+Buffer.propTypes = {
+  location: propTypes.shape().isRequired,
 };
 
 export default Buffer;
