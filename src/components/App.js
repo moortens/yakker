@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 
@@ -42,6 +43,11 @@ const App = ({ history, location }) => {
       </Switch>
     </Container>
   );
+};
+
+App.propTypes = {
+  location: propTypes.shape().isRequired,
+  history: propTypes.shape().isRequired,
 };
 
 export default withRouter(App);
