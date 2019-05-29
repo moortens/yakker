@@ -34,7 +34,7 @@ const Buffer = ({
         <MessageList bid={bid} />
         <Userlist bid={bid} />
       </Container>
-      <MessageInput />
+      <MessageInput bid={bid} />
     </Container>
   );
 };

@@ -181,9 +181,9 @@ class MessageInput extends React.Component {
       const {
         value: { document },
       } = this.state;
-      const { buffer, thread } = this.props;
+      const { buffer } = this.props;
 
-      this.props.sendMessageToBuffer(buffer, thread, this.serialize(document));
+      this.props.sendMessageToBuffer(buffer, this.serialize(document));
 
       this.setState(
         {
@@ -227,23 +227,23 @@ class MessageInput extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, { bid }) => {
   const {
-    ui: { currentBuffer, thread },
+    buffer: { entities },
   } = state;
+
+  console.log(entities, bid)
   return {
-    buffer: currentBuffer,
-    thread,
+    buffer: entities[bid].name,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  sendMessageToBuffer: (target, thread, data) => {
+  sendMessageToBuffer: (target, data) => {
     dispatch({
       type: 'WS::SEND',
       payload: {
         target,
-        thread,
         data,
       },
     });
