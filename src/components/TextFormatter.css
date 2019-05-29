@@ -1,0 +1,16 @@
+.text-bold {
+  font-weight: bold;
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-emoji {
+  width: 20px;
+  height: 20px;
+}

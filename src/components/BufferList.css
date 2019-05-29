@@ -1,0 +1,44 @@
+.channel-list-container {
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  flex-grow: 1;
+}
+
+.channel-list {
+  font-family: monospace;
+  font-size: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 5px;
+  box-sizing: border-box;
+  color: #9A8C98;
+  text-decoration: none;
+}
+
+.channel-list:hover {
+  /**
+  red:#DB504A
+  yellow: #E3B505
+
+  */
+  background-color: #546A7B;
+  border-radius: 3px;
+  color: #fff;
+}
+
+.channel-list-header {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: monospace;
+  color: #4A4E69;
+}
+
+.active {
+  background-color: #4A4E69;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  color: #DBF9F4;
+}

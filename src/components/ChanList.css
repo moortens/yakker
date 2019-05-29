@@ -1,0 +1,122 @@
+.chanlist-top {
+  width: 100%;
+  
+}
+
+.chanlist {
+  padding-top: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 100%;
+}
+
+.chanlist-header {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.chanlist-item {
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.chanlist-item:last-child {
+  border-bottom: 0;
+}
+
+.chanlist-item-container {
+  width: 100%;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.chanlist-item:hover {
+  background-color: #ececec;
+}
+
+.chanlist-channel {
+  vertical-align: bottom;
+  flex-grow: 1;
+  font-size: 22px;
+  color: #333;
+  width: 220px;
+  min-width: 220px;
+}
+
+.chanlist-topic {
+  font-style: italic;
+  width: 100%;
+  color: #999;
+  font-size: 12px;
+}
+
+.chanlist-users {
+  width: 50px;
+}
+
+.chanlist-badge {
+  border-radius: 3px;
+  padding: 6px;
+  margin-left: 5px;
+  font-size: 10px;
+  background-color: #ececec;
+  color: #333;
+  text-transform: uppercase;
+
+}
+.icon {
+  color: #bbb;
+  margin-right: 5px;
+}
+
+.chanlist-search {
+  padding: 20px;
+ background-color: #f3f3f3;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  color: #ccc;
+}
+
+.chanlist-search input {
+  width: 100%;
+  box-sizing: content-box;
+  height: inherit;
+  font-size: 20px;
+  margin-left: 5px;
+  border: none;
+  outline: none;
+  background-color: inherit;
+  color: #333;
+}
+
+.chanlist-search input::placeholder {
+  color: #ccc;
+}
+
+.chanlist-paginate {
+  width: 100%;
+  
+}
+
+.chanlist-paginate ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+.chanlist-paginate li {
+  padding: 5px;
+  
+}
+
+.chanlist-paginate li.previous {
+  
+}

@@ -1,0 +1,37 @@
+.message {
+  margin-left: 10px;
+  box-sizing: border-box;
+  margin-bottom: 3px;
+  
+  font-family: 'monospace';
+  font-size: 14px;
+  width: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+.message-nick {
+  
+}
+
+.message-repeat {
+  color: #fff;
+}
+
+.message:hover .message-icons {
+  visibility: visible;
+}
+
+.message-icons {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  width: 100px;
+  color: #999;
+  box-shadow: 1px 1px 5px 0px #999;
+  
+  top: 0;
+  visibility: hidden;
+}

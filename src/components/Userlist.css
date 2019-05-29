@@ -1,0 +1,109 @@
+.userlist-item {
+  padding-left: 3px;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.userlist-item:hover {
+  background-color: #ececec;
+}
+
+.userlist-away {
+  color: #ddd;
+}
+
+.userlist-search {
+  width: 100%;
+  height: 30px;
+  border-bottom: 1px solid #ccc;
+}
+
+.userlist-search-input {
+  width: inherit;
+  border: 0px;
+  height: 29px;
+  box-sizing: border-box;
+  line-height: 29px;
+}
+
+.userlist-search-input:focus {
+  outline: none;
+}
+
+.userlist-mode-header {
+  text-transform: uppercase;
+  font-size: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+  
+}
+.userlist-item-administrator,
+.userlist-mode-administrator {
+  
+}
+
+.userlist-item-operator,
+.userlist-mode-operator {
+  margin-bottom: 1px;
+  color: blue;
+}
+
+.userlist-mode-founder {
+  margin-bottom: 1px;
+  color: green;
+}
+
+.userlist-mode-protected {
+  margin-bottom: 1px;
+  color: yellow;
+}
+
+.userlist-mode-members {
+  margin-bottom: 1px;
+  color: pink;
+}
+
+.userlist-mode-operator {
+  color: black;
+  margin-bottom: 1px;
+}
+
+.userlist-mode {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.userlist-mode-administrators header,
+.userlist-mode-founder header,
+.userlist-mode-operators header,
+.userlist-mode-protected header,
+.userlist-mode-members header {
+  padding-left: 5px;
+  color: #999;
+}
+.userlist-mode-members {
+  color: black;
+  margin-bottom: 1px;
+}
+
+.userlist-symbol {
+  width: 8px;
+  height: 8px;
+  vertical-align: middle;
+  color: lightgreen;
+  border: 1px solid #999;
+  border-radius: 50%;
+  background-color: lightgreen;
+}
+
+.userlist-away {
+  width: 8px;
+  height: 8px;
+  vertical-align: middle;
+  color: orangered;
+  border: 1px solid #999;
+  border-radius: 50%;
+  background-color: orangered;
+}

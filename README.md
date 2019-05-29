@@ -1,68 +1,20 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# yakker
 
-## Available Scripts
+**yakker** is an IRC client built with [irc-framework](https://github.com/kiwiirc/irc-framework/ "irc-framework"), [React](https://reactjs.org "React") and [Redux](https://redux.js.org/ "Redux"). It differes from other clients in a few ways. *It's not considered stable for production use*, so please, just *don't* use it for that :tongue:.
 
-In the project directory, you can run:
+### Overview
+* **There is no Status window.** People who need the status window will likely use other clients :dizzy_face:.
+* **WebSocket only:exclamation:** Since UnrealIRCd and InspIRCd now ships with a WebSocket module, lets just use that :see_no_evil:
+* **Made for smaller networks.** Don't know which channels to join? Well, lets give you a channel list when you connect :boom:
+* **Threads.** IRCv3 has a draft, so... :sparkles:
+* **Emojis:exclamation:** Yeah, everyone has those now, but :cool:...
+* **Runs on any web server.** It's just a couple of static files, no daemon, fancy requirements or anything :floppy_disk:
 
-### `npm start`
+### Development
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Behind the scenes, `create-react-app` is used. Want to test or develop? Just clone or fork the respository then:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+* `yarn install` to install all the dependencies
+* Edit `config.json` in `src/` and add a network with WebSocket support  :wrench:(unless you run your own ircd on localhost, like me :thumbsup:).
+* Let `yarn start` to do it's magic
+* Be prepared for a ton of  :bug:'s

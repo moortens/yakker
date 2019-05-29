@@ -1,0 +1,17 @@
+{
+  "cacheConnectionDetails": false,
+
+  "autoConnectOnLoad": true,
+  "autoJoinPreviousChannels": false,
+
+  "notifyMentions": false,
+  "notifyAllMessages": false,
+  "notifyPrivateMessages": false,
+
+  "displayUnreadInSidebar": false,
+  "displayUnreadIndicator": false,
+
+  "networks": [
+    { "value": "127.0.0.1:8080", "label": "Testnet" }
+  ]
+}
