@@ -1,7 +1,7 @@
 import React from 'react';
 import { Editor } from 'slate-react';
 import { Value } from 'slate';
-import { Emoji, Picker } from 'emoji-mart';
+import { Emoji } from 'emoji-mart';
 import { connect } from 'react-redux';
 import isHotKey from 'is-hotkey';
 import './MessageInput.css';
