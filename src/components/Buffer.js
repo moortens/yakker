@@ -1,6 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Container from './Container';
 
@@ -10,8 +11,11 @@ import Header from './Header';
 import Userlist from './Userlist';
 
 const Buffer = ({ location: { state: { bid = null } = {} } }) => {
-  console.log(bid)
-  if (bid === undefined || bid === null) {
+  const isBufferPresent = useSelector(state =>
+    Object.keys(state.buffer.entities).includes(bid),
+  );
+
+  if (bid === null || isBufferPresent === false) {
     return <Redirect to="/" />;
   }
 
