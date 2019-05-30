@@ -1,5 +1,6 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 import Container from './Container';
 
@@ -8,11 +9,12 @@ import MessageInput from './MessageInput';
 import Header from './Header';
 import Userlist from './Userlist';
 
-const Buffer = ({
-  location: {
-    state: { bid },
-  },
-}) => {
+const Buffer = ({ location: { state: { bid = null } = {} } }) => {
+  console.log(bid)
+  if (bid === undefined || bid === null) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <Container
       direction="column"
@@ -40,7 +42,15 @@ const Buffer = ({
 };
 
 Buffer.propTypes = {
-  location: propTypes.shape().isRequired,
+  location: propTypes.shape(),
+};
+
+Buffer.defaultProps = {
+  location: {
+    state: {
+      bid: null,
+    },
+  },
 };
 
 export default Buffer;
