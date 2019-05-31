@@ -15,6 +15,12 @@ const getBlockType = char => {
       return 'underline';
     case '\x03':
       return 'color';
+    case '\x1e':
+      return 'strikethrough';
+    case '\x11':
+      return 'monospace';
+    case '\x0f':
+      return 'reset';
     default:
       return 'normal';
   }
@@ -27,6 +33,8 @@ const buildStyleBlocks = (
     bold = false,
     italic = false,
     underline = false,
+    monospace = false,
+    strikethrough = false,
     data: { foreground = null, background = null } = {},
   } = {},
 ) => {
@@ -37,6 +45,8 @@ const buildStyleBlocks = (
     bold,
     italic,
     underline,
+    monospace,
+    strikethrough,
     data: {
       foreground,
       background,
@@ -71,14 +81,17 @@ const buildStyleBlocks = (
       // we recieved a new block type, the color block
       // is special in that it has parameters, and can happen
       // in layers.
-      block.next = buildStyleBlocks(
-        d.substring(i + 1),
-        Object.assign({}, block, {
-          ...block,
-          [type]: type === 'color' ? true : !block[type],
-        }),
-      );
-
+      if (type === 'reset') {
+        block.next = buildStyleBlocks(d.substring(i + 1));
+      } else {
+        block.next = buildStyleBlocks(
+          d.substring(i + 1),
+          Object.assign({}, block, {
+            ...block,
+            [type]: type === 'color' ? true : !block[type],
+          }),
+        );
+      }
       return block;
     }
 
@@ -109,6 +122,8 @@ const TextFormatter = ({ text }) => {
       bold,
       italic,
       underline,
+      monospace,
+      strikethrough,
       color,
       data: { foreground, background },
       next,
@@ -118,6 +133,8 @@ const TextFormatter = ({ text }) => {
       'text-bold': bold,
       'text-italic': italic,
       'text-underline': underline,
+      'text-monospace': monospace,
+      'text-strikethrough': strikethrough,
     };
 
     if (color === true) {

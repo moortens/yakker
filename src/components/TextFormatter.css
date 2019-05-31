@@ -15,10 +15,21 @@
   height: 20px;
 }
 
+.text-monospace {
+  font-family: monospace;
+  background-color: lightgrey;
+  border: 1px solid #666;
+  border-radius: 2px;
+}
+
+.text-strikethrough {
+  text-decoration: line-through;
+}
+
 .text-normal {
-  font-weight: inherit;
-  text-decoration: inherit;
-  font-style: inherit;
+  font-weight: normal;
+  text-decoration: none;
+  font-style: normal;
   color: black;
   background-color: white;
 }
