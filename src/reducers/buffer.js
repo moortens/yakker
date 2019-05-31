@@ -7,6 +7,7 @@ const initialState = {
 const bufferState = {
   bid: null,
   name: null,
+  channel: false,
 };
 
 export default (state = initialState, action) => {
@@ -14,7 +15,7 @@ export default (state = initialState, action) => {
 
   switch (type) {
     case 'BUFFER_ADD': {
-      const { bid, name } = payload;
+      const { bid, name, channel } = payload;
 
       return Object.assign({}, state, {
         ...state,
@@ -27,6 +28,7 @@ export default (state = initialState, action) => {
           [bid]: Object.assign({}, bufferState, {
             bid,
             name,
+            channel,
           }),
         },
       });

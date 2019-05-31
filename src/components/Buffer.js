@@ -11,13 +11,13 @@ import Header from './Header';
 import Userlist from './Userlist';
 
 const Buffer = ({ location: { state: { bid = null } = {} } }) => {
-  const isBufferPresent = useSelector(state =>
-    Object.keys(state.buffer.entities).includes(bid),
-  );
+  const buffer = useSelector(state => state.buffer.entities[bid]);
 
-  if (bid === null || isBufferPresent === false) {
+  if (bid === null || buffer === undefined) {
     return <Redirect to="/" />;
   }
+
+  const { channel } = buffer;
 
   return (
     <Container
@@ -38,7 +38,7 @@ const Buffer = ({ location: { state: { bid = null } = {} } }) => {
         }}
       >
         <MessageList bid={bid} />
-        <Userlist bid={bid} />
+        {channel && <Userlist bid={bid} />}
       </Container>
       <MessageInput bid={bid} />
     </Container>

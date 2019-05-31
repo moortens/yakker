@@ -1,8 +1,9 @@
-export const addBuffer = (bid, name) => ({
+export const addBuffer = (bid, name, channel = false) => ({
   type: 'BUFFER_ADD',
   payload: {
     bid,
     name,
+    channel,
   },
 });
 

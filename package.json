@@ -10,6 +10,7 @@
     "classnames": "^2.2.6",
     "emoji-mart": "^2.11.0",
     "emoji-regex": "^8.0.0",
+    "history": "^4.9.0",
     "immutable": "^4.0.0-rc.12",
     "irc-framework": "kiwiirc/irc-framework",
     "is-hotkey": "^0.1.4",

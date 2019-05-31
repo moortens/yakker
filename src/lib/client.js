@@ -344,7 +344,7 @@ export default class Client extends Connection {
       this.socket.who(target);
 
       this.dispatch(addChannel(bid, target));
-      this.dispatch(addBuffer(bid, target));
+      this.dispatch(addBuffer(bid, target, true));
 
       // store joined channels in cache, remove on part
       return;
