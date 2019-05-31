@@ -1,73 +1,147 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import propTypes from 'prop-types';
+import classnames from 'classnames';
 import twemoji from 'twemoji';
 
-import escape from 'lodash/escape';
 import './TextFormatter.css';
 
-export default class TextFormatter extends React.Component {
-  getBlockType = char => {
-    if (char === '\x02') {
+const getBlockType = char => {
+  switch (char) {
+    case '\x02':
       return 'bold';
-    }
-    if (char === '\x1d') {
+    case '\x1d':
       return 'italic';
-    }
-    if (char === '\x1f') {
+    case '\x1f':
       return 'underline';
-    }
-    return null;
+    case '\x03':
+      return 'color';
+    default:
+      return 'normal';
+  }
+};
+
+const buildStyleBlocks = (
+  d,
+  {
+    color = false,
+    bold = false,
+    italic = false,
+    underline = false,
+    data: { foreground = null, background = null } = {},
+  } = {},
+) => {
+  let i = 0;
+  const block = {
+    content: '',
+    color,
+    bold,
+    italic,
+    underline,
+    data: {
+      foreground,
+      background,
+    },
+    next: null,
   };
 
-  formatter = data => {
-    const flags = {
-      bold: false,
-      italic: false,
-      underline: false,
-    };
+  if (block.color) {
+    if (!/^(?!,)(\d{1,2})(?:,(\d{1,2}))?/.test(d)) {
+      block.color = false;
+    } else {
+      const [match, fore, back] = d.match(/^(?!,)(\d{1,2})(?:,(\d{1,2}))?/);
 
-    // Converts the characters "&", "<", ">", '"', and "'" in string
-    // to their corresponding HTML entities.
-    const text = escape(data);
+      block.color = true;
+      // since colors can be represented as both a two digit version
+      // as well as a single digit, always parse the integer so things
+      // like 01, 02, ... are turned into single digits.
+      block.data.foreground = parseInt(fore, 10) || foreground;
+      block.data.background = parseInt(back, 10) || background;
 
-    let __html = text
-      .split('')
-      .map(char => {
-        const blockType = this.getBlockType(char);
+      i = match.length;
+    }
+  }
 
-        if (blockType !== null) {
-          if (!flags[blockType]) {
-            flags[blockType] = true;
+  while (i < d.length) {
+    const char = d.charAt(i);
+    const type = getBlockType(char);
 
-            return `<span class="text-${blockType}">`;
-          }
-          flags[blockType] = false;
+    if (type === 'normal') {
+      block.content += char;
+    } else {
+      // we recieved a new block type, the color block
+      // is special in that it has parameters, and can happen
+      // in layers.
+      block.next = buildStyleBlocks(
+        d.substring(i + 1),
+        Object.assign({}, block, {
+          ...block,
+          [type]: type === 'color' ? true : !block[type],
+        }),
+      );
 
-          return '</span>';
-        }
-        return char;
-      })
-      .join('');
+      return block;
+    }
 
-    __html += Object.keys(flags)
-      .filter(item => flags[item])
-      .map(item => '</span>')
-      .join('');
+    i += 1;
+  }
+  return block;
+};
 
+const TextFormatter = ({ text }) => {
+  const emojiRef = useRef();
+
+  useEffect(() => {
     // Provides support for the standard Unicode emojis
-    __html = twemoji.parse(__html, {
+    twemoji.parse(emojiRef.current, {
       className: 'text-emoji',
     });
+  }, [emojiRef]);
 
-    return {
-      __html,
+  const blocks = buildStyleBlocks(text);
+
+  const formatter = data => {
+    if (data === null) {
+      return null;
+    }
+
+    const {
+      content,
+      bold,
+      italic,
+      underline,
+      color,
+      data: { foreground, background },
+      next,
+    } = data;
+
+    const styles = {
+      'text-bold': bold,
+      'text-italic': italic,
+      'text-underline': underline,
     };
-  };
 
-  render() {
-    const { text, ...attributes } = this.props;
+    if (color === true) {
+      if (foreground) {
+        styles[`foreground-${foreground}`] = true;
+      }
+      if (background) {
+        styles[`background-${background}`] = true;
+      }
+    }
 
     return (
-      <div dangerouslySetInnerHTML={this.formatter(text)} {...attributes} />
+      <>
+        <span className={classnames('text-container', styles)}>{content}</span>
+        {formatter(next)}
+      </>
     );
-  }
-}
+  };
+
+  return <div ref={emojiRef}>{formatter(blocks)}</div>;
+};
+
+TextFormatter.propTypes = {
+  text: propTypes.string.isRequired,
+};
+
+export default TextFormatter;
