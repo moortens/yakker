@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import createWebSocketConnectionMiddleware from './middleware/websocket';
 import reducers from './reducers';
 import { saveCachedState, loadCachedState } from './lib/storage';
+import history from './lib/history';
 
 const configureStore = () => {
   // eslint-disable-next-line no-underscore-dangle
@@ -41,7 +42,7 @@ const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <Router history={history}>
       <App />
     </Router>
   </Provider>,

@@ -25,6 +25,7 @@ import {
 import { setCache } from '../actions/cache';
 
 import addMessage from '../actions/message';
+import history from './history';
 
 export default class Client extends Connection {
   constructor(getState, dispatch) {
@@ -112,6 +113,14 @@ export default class Client extends Connection {
 
   set buffer(buffer = null) {
     this.dispatch(setCurrentBuffer(buffer));
+  }
+
+  get settings() {
+    const {
+      settings,
+    } = this.getState();
+
+    return settings;
   }
 
   get buffer() {
@@ -389,10 +398,24 @@ export default class Client extends Connection {
     if (this.nickname === target) {
       target = nick;
 
-      if (bid === null) {
+      if (bid === undefined || bid === null) {
         bid = uuid();
 
         this.dispatch(addBuffer(bid, target));
+      }
+
+      if (this.settings.notifyPrivateMessages) {
+        if (Notification.permission === 'granted') {
+          const notification = new Notification(`Private message from ${nick}`, {
+            body: data,
+          });
+
+          notification.addEventListener('click', e => {
+            history.push(`/message/${nick.toLowerCase()}`, {
+              bid,
+            });
+          });
+        }
       }
     }
 
