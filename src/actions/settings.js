@@ -37,3 +37,8 @@ export const setSettingsDisplayUnreadIndicator = payload => ({
   type: 'SETTINGS_DISPLAY_UNREAD_INDICATOR',
   payload,
 });
+
+export const setSettingsEmbedUntrustedImages = payload => ({
+  type: 'SETTINGS_EMBED_UNTRUSTED_IMAGES',
+  payload,
+});

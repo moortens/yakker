@@ -11,6 +11,7 @@ const MessageList = ({ bid }) => {
     state => bufferMessageSelector(state, bid),
     [bid],
   );
+  const { embedUntrustedImages } = useSelector(state => state.settings);
 
   const isContinouousMessage = idx => {
     const previousMessage = messages[idx - 1];
@@ -39,6 +40,7 @@ const MessageList = ({ bid }) => {
             message={message}
             replies={replies}
             continouous={isContinouousMessage(idx)}
+            embed={embedUntrustedImages}
           />
         );
       });

@@ -19,7 +19,12 @@ const Header = ({ bid }) => {
     <div className="header-container">
       <Container direction="row" style={{ alignItems: 'baseline' }}>
         <div className="header-name">{name}</div>
-        <TextFormatter className="header-title" title={topic} text={topic} />
+        <TextFormatter
+          className="header-title"
+          title={topic}
+          text={topic}
+          embed={false}
+        />
         <div className="header-nav" style={{ width: '200px' }}>
           <Container direction="row" style={{ alignItems: 'flex-end' }}>
             <div className="header-nav-item">

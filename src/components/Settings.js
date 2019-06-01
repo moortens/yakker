@@ -15,6 +15,7 @@ import {
   setSettingsNotifyAllMessages,
   setSettingsNotifyMentions,
   setSettingsNotifyPrivateMessages,
+  setSettingsEmbedUntrustedImages,
 } from '../actions/settings';
 
 import './Settings.css';
@@ -33,6 +34,7 @@ const Settings = () => {
     notifyPrivateMessages,
     displayUnreadInSidebar,
     displayUnreadIndicator,
+    embedUntrustedImages,
   } = useSelector(state => state.settings);
 
   useEffect(() => {
@@ -111,6 +113,16 @@ const Settings = () => {
           }
         />
         Show unread messages indicator in chat
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          checked={embedUntrustedImages}
+          onChange={({ target: { checked } }) =>
+            dispatch(setSettingsEmbedUntrustedImages(checked))
+          }
+        />
+        Embed images in chat
       </label>
 
       <div className="settings-account">Notifications</div>

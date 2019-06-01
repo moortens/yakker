@@ -1,3 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+.text-container {
+  font-size: 16px;
+  
+  line-height: 25px;
+  color: #333;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+
 .text-bold {
   font-weight: bold;
 }

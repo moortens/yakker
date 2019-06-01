@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import propTypes from 'prop-types';
 import classnames from 'classnames';
+import uniqBy from 'lodash/uniqBy';
 import LinkifyIt from 'linkify-it';
 import twemoji from 'twemoji';
+
 
 import './TextFormatter.css';
 
@@ -147,7 +149,7 @@ const buildImagePreview = urls => {
 
   let images = [];
 
-  urls.forEach(match => {
+  uniqBy(urls, 'url').forEach(match => {
     if (imageRe.test(match.url)) {
       images = [
         ...images,
@@ -159,7 +161,7 @@ const buildImagePreview = urls => {
   return images;
 };
 
-const TextFormatter = ({ text }) => {
+const TextFormatter = ({ text, embed }) => {
   const emojiRef = useRef();
 
   useEffect(() => {
@@ -222,13 +224,18 @@ const TextFormatter = ({ text }) => {
   return (
     <div>
       <div ref={emojiRef}>{children}</div>
-      {images}
+      {embed && images}
     </div>
   );
 };
 
 TextFormatter.propTypes = {
   text: propTypes.string.isRequired,
+  embed: propTypes.bool,
+};
+
+TextFormatter.defaultProps = {
+  embed: false,
 };
 
 export default TextFormatter;

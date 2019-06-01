@@ -13,6 +13,8 @@ const defaultState = {
   displayUnreadInSidebar: false,
   displayUnreadIndicator: false,
 
+  embedUntrustedImages: false,
+
   networks: [],
 };
 
@@ -76,6 +78,13 @@ export default (state = initialState, { type, payload }) => {
       return Object.assign({}, state, {
         ...state,
         displayUnreadIndicator: payload,
+      });
+    }
+
+    case 'SETTINGS_EMBED_UNTRUSTED_IMAGES': {
+      return Object.assign({}, state, {
+        ...state,
+        embedUntrustedImages: payload,
       });
     }
 

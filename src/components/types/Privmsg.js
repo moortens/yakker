@@ -73,7 +73,7 @@ export default class Privmsg extends React.Component {
   };
 
   render() {
-    const { message, continouous, replies } = this.props;
+    const { message, continouous, replies, ...props } = this.props;
 
     return (
       <Container direction="row">
@@ -93,7 +93,11 @@ export default class Privmsg extends React.Component {
               </span>
             </div>
           )}
-          <TextFormatter className="message-data" text={message.data} />
+          <TextFormatter
+            className="message-data"
+            text={message.data}
+            {...props}
+          />
           {this.showNumberOfReplies()}
         </div>
       </Container>
