@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import propTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -12,6 +12,16 @@ import Userlist from './Userlist';
 
 const Buffer = ({ location: { state: { bid = null } = {} } }) => {
   const buffer = useSelector(state => state.buffer.entities[bid]);
+
+  useEffect(() => {
+    if (buffer === undefined) {
+      return;
+    }
+
+    const { name } = buffer;
+
+    document.title = `${name}`;
+  }, [buffer]);
 
   if (bid === null || buffer === undefined) {
     return <Redirect to="/" />;
