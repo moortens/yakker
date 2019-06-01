@@ -89,7 +89,7 @@ class MessageInput extends React.Component {
 
       case 'monospace': {
         return (
-          <span style={{ backgroundColor: '#ececec' }} {...attributes}>
+          <span className="message-input-monospace" {...attributes}>
             {children}
           </span>
         );

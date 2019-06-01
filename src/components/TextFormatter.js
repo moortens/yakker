@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import propTypes from 'prop-types';
 import classnames from 'classnames';
+import LinkifyIt from 'linkify-it';
 import twemoji from 'twemoji';
 
 import './TextFormatter.css';
@@ -146,9 +147,43 @@ const TextFormatter = ({ text }) => {
       }
     }
 
+    const linkify = LinkifyIt();
+    const urls = linkify.match(content);
+
+    let children = [];
+    if (urls) {
+      let index = 0;
+      urls.forEach(match => {
+        if (index < match.index) {
+          children = [...children, content.substring(index, match.index)];
+        }
+
+        children = [
+          ...children,
+          <a
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-link"
+            href={match.url}
+            title={match.url}
+          >
+            {match.raw}
+          </a>,
+        ];
+
+        index = match.lastIndex;
+      });
+
+      if (index < content.length) {
+        children = [...children, content.substring(index)];
+      }
+    } else {
+      children = [content];
+    }
+
     return (
       <>
-        <span className={classnames('text-container', styles)}>{content}</span>
+        <span className={classnames('text-container', styles)}>{children}</span>
         {formatter(next)}
       </>
     );

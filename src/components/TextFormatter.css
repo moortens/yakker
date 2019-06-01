@@ -17,9 +17,25 @@
 
 .text-monospace {
   font-family: monospace;
-  background-color: lightgrey;
-  border: 1px solid #666;
-  border-radius: 2px;
+  font-size: inherit;
+  background-color: #ececec;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 5px;
+}
+
+.text-link {
+  text-decoration: none;
+  color: inherit;
+  background-color: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+}
+
+.text-link:hover {
+  text-decoration: underline;
 }
 
 .text-strikethrough {

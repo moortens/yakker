@@ -21,5 +21,12 @@
 
 .message-input-editor {
   vertical-align: top;
+  font-family: sans-serif;
+}
+.message-input-monospace {
+  background-color: #ececec;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   font-family: monospace;
 }
