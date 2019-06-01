@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import propTypes from 'prop-types';
 import classnames from 'classnames';
+import Img from 'react-image';
 import uniqBy from 'lodash/uniqBy';
 import LinkifyIt from 'linkify-it';
 import twemoji from 'twemoji';
-
 
 import './TextFormatter.css';
 
@@ -153,7 +153,7 @@ const buildImagePreview = urls => {
     if (imageRe.test(match.url)) {
       images = [
         ...images,
-        <img className="text-image" src={match.url} alt={match.raw} />,
+        <Img className="text-image" src={match.url} alt={match.raw} />,
       ];
     }
   });
