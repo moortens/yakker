@@ -101,6 +101,64 @@ const buildStyleBlocks = (
   return block;
 };
 
+const buildContentLinks = content => {
+  const linkify = LinkifyIt();
+  const urls = linkify.match(content);
+
+  let children = [];
+  if (urls) {
+    let index = 0;
+    urls.forEach(match => {
+      if (index < match.index) {
+        children = [...children, content.substring(index, match.index)];
+      }
+
+      children = [
+        ...children,
+        <a
+          target="_blank"
+          rel="noreferrer noopener"
+          className="text-link"
+          href={match.url}
+          title={match.url}
+        >
+          {match.raw}
+        </a>,
+      ];
+
+      index = match.lastIndex;
+    });
+
+    if (index < content.length) {
+      children = [...children, content.substring(index)];
+    }
+  } else {
+    children = [content];
+  }
+  return [urls, children];
+};
+
+const buildImagePreview = urls => {
+  if (!urls) {
+    return null;
+  }
+
+  const imageRe = /\.(gif|jpe?g|bmp|png|webp)$/;
+
+  let images = [];
+
+  urls.forEach(match => {
+    if (imageRe.test(match.url)) {
+      images = [
+        ...images,
+        <img className="text-image" src={match.url} alt={match.raw} />,
+      ];
+    }
+  });
+
+  return images;
+};
+
 const TextFormatter = ({ text }) => {
   const emojiRef = useRef();
 
@@ -147,49 +205,26 @@ const TextFormatter = ({ text }) => {
       }
     }
 
-    const linkify = LinkifyIt();
-    const urls = linkify.match(content);
+    const [urls, children] = buildContentLinks(content);
+    const images = buildImagePreview(urls);
 
-    let children = [];
-    if (urls) {
-      let index = 0;
-      urls.forEach(match => {
-        if (index < match.index) {
-          children = [...children, content.substring(index, match.index)];
-        }
-
-        children = [
-          ...children,
-          <a
-            target="_blank"
-            rel="noreferrer noopener"
-            className="text-link"
-            href={match.url}
-            title={match.url}
-          >
-            {match.raw}
-          </a>,
-        ];
-
-        index = match.lastIndex;
-      });
-
-      if (index < content.length) {
-        children = [...children, content.substring(index)];
-      }
-    } else {
-      children = [content];
-    }
-
-    return (
+    return [
+      images,
       <>
         <span className={classnames('text-container', styles)}>{children}</span>
         {formatter(next)}
-      </>
-    );
+      </>,
+    ];
   };
 
-  return <div ref={emojiRef}>{formatter(blocks)}</div>;
+  const [images, children] = formatter(blocks);
+
+  return (
+    <div>
+      <div ref={emojiRef}>{children}</div>
+      {images}
+    </div>
+  );
 };
 
 TextFormatter.propTypes = {
