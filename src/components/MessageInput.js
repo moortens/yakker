@@ -1,110 +1,200 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import propTypes from 'prop-types';
 import { Editor } from 'slate-react';
 import { Value } from 'slate';
 import { Emoji } from 'emoji-mart';
-import { connect } from 'react-redux';
-import isHotKey from 'is-hotkey';
-import './MessageInput.css';
-import 'emoji-mart/css/emoji-mart.css';
+import { useDispatch } from 'react-redux';
+import isKeyHotkey from 'is-hotkey';
+
 import Container from './Container';
 import EmojiPicker from './EmojiPicker';
 
-class MessageInput extends React.Component {
-  schema = {
-    inlines: {
-      emoji: {
-        isVoid: true,
+import './MessageInput.css';
+
+const schema = {
+  inlines: {
+    emoji: {
+      isVoid: true,
+    },
+  },
+};
+
+const initialValue = {
+  object: 'value',
+  document: {
+    object: 'document',
+    nodes: [
+      {
+        object: 'block',
+        type: 'paragraph',
+        nodes: [],
       },
-    },
-  };
+    ],
+  },
+};
 
-  initialValue = {
-    object: 'value',
-    document: {
-      object: 'document',
-      nodes: [
-        {
-          object: 'block',
-          type: 'paragraph',
-          nodes: [],
-        },
-      ],
-    },
-  };
+const sendMessageToBuffer = (bid, tid, data) => ({
+  type: 'WS::SEND',
+  payload: {
+    bid,
+    tid,
+    data,
+  },
+});
 
-  state = {
-    value: Value.fromJSON(this.initialValue),
-  };
+const isBoldHotkey = isKeyHotkey('mod+b');
+const isItalicHotkey = isKeyHotkey('mod+i');
+const isUnderlineHotkey = isKeyHotkey('mod+u');
+const isMonospaceHotkey = isKeyHotkey('mod+m');
+const isEnterHotkey = isKeyHotkey('enter');
 
-  container = React.createRef();
+const renderNode = (props, editor, next) => {
+  const { attributes, children, node } = props;
 
-  refe = editor => {
-    this.editor = editor;
-  };
-
-  onChange = ({ value }) => this.setState({ value });
-
-  renderNode = (props, editor, next) => {
-    const { attributes, children, node } = props;
-
-    switch (node.type) {
-      case 'paragraph': {
-        return <p {...attributes}>{children}</p>;
-      }
-
-      case 'emoji': {
-        const id = node.data.get('id');
-        return (
-          <span {...props.attributes} contentEditable={false}>
-            <Emoji emoji={id} set="twitter" size={16} />
-          </span>
-        );
-      }
-
-      default: {
-        return next();
-      }
+  switch (node.type) {
+    case 'paragraph': {
+      return <p {...attributes}>{children}</p>;
     }
-  };
 
-  renderMark = (props, editor, next) => {
-    const {
-      children,
-      mark: { type },
-      attributes,
-    } = props;
-
-    switch (type) {
-      case 'bold': {
-        return <strong {...attributes}>{children}</strong>;
-      }
-
-      case 'italic': {
-        return <em {...attributes}>{children}</em>;
-      }
-
-      case 'underline': {
-        return <u {...attributes}>{children}</u>;
-      }
-
-      case 'monospace': {
-        return (
-          <span className="message-input-monospace" {...attributes}>
-            {children}
-          </span>
-        );
-      }
-
-      default: {
-        return next();
-      }
+    case 'emoji': {
+      const id = node.data.get('id');
+      return (
+        <span {...attributes} contentEditable={false}>
+          <Emoji emoji={id} set="twitter" size={16} />
+        </span>
+      );
     }
+
+    default: {
+      return next();
+    }
+  }
+};
+
+const renderMark = (props, editor, next) => {
+  const {
+    children,
+    mark: { type },
+    attributes,
+  } = props;
+
+  switch (type) {
+    case 'bold': {
+      return <strong {...attributes}>{children}</strong>;
+    }
+
+    case 'italic': {
+      return <em {...attributes}>{children}</em>;
+    }
+
+    case 'underline': {
+      return <u {...attributes}>{children}</u>;
+    }
+
+    case 'monospace': {
+      return (
+        <span className="message-input-monospace" {...attributes}>
+          {children}
+        </span>
+      );
+    }
+
+    default: {
+      return next();
+    }
+  }
+};
+
+const serializeMarks = ({ type }) => {
+  switch (type) {
+    case 'bold': {
+      return '\x02';
+    }
+    case 'italic': {
+      return '\x1D';
+    }
+
+    case 'underline': {
+      return '\x1F';
+    }
+
+    case 'monospace': {
+      return '\x11';
+    }
+
+    default:
+      return null;
+  }
+};
+
+const serialize = node => {
+  if (node.object === 'document' || node.object === 'block') {
+    return node.nodes.map(serialize).join('');
+  }
+  if (node.object === 'inline') {
+    if (node.type === 'emoji') {
+      return node.data.get('native');
+    }
+  } else if (node.object === 'text') {
+    const leaves = node.getLeaves();
+
+    if (leaves === undefined) {
+      return node.text;
+    }
+
+    return leaves
+      .map(({ marks, text }) => {
+        const code = marks.map(serializeMarks).join('');
+
+        return `${code}${text}${code}`;
+      })
+      .join('');
+  }
+  return '';
+};
+
+const MessageInput = ({ bid, tid }) => {
+  const [currentValue, setCurrentValue] = useState(
+    Value.fromJSON(initialValue),
+  );
+  const editorRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const onKeyDown = (e, editor, next) => {
+    let mark;
+
+    if (isBoldHotkey(e)) {
+      mark = 'bold';
+    } else if (isItalicHotkey(e)) {
+      mark = 'italic';
+    } else if (isUnderlineHotkey(e)) {
+      mark = 'underline';
+    } else if (isMonospaceHotkey(e)) {
+      mark = 'monospace';
+    } else if (isEnterHotkey(e)) {
+      const {
+        value: { document },
+      } = editor;
+
+      dispatch(sendMessageToBuffer(bid, tid, serialize(document)));
+      editor.moveToRangeOfDocument().delete();
+      editor.focus();
+
+      return null;
+    } else {
+      return next();
+    }
+    e.preventDefault();
+
+    editor.toggleMark(mark);
+
+    return null;
   };
 
-  insertEmoji = e => {
+  const insertEmoji = e => {
     const { id, native } = e;
 
-    this.editor
+    editorRef.current
       .insertInline({
         type: 'emoji',
         data: {
@@ -116,141 +206,35 @@ class MessageInput extends React.Component {
       .focus();
   };
 
-  serializeMarks = ({ type }) => {
-    switch (type) {
-      case 'bold': {
-        return '\x02';
-      }
-      case 'italic': {
-        return '\x1D';
-      }
-
-      case 'underline': {
-        return '\x1F';
-      }
-
-      case 'monospace': {
-        return '\x11';
-      }
-
-      default:
-        return null;
-    }
-  };
-
-  serialize = node => {
-    if (node.object === 'document' || node.object === 'block') {
-      return node.nodes.map(this.serialize).join('');
-    }
-    if (node.object === 'inline') {
-      if (node.type === 'emoji') {
-        return node.data.get('native');
-      }
-    } else if (node.object === 'text') {
-      const leaves = node.getLeaves();
-
-      if (leaves === undefined) {
-        return node.text;
-      }
-
-      return leaves
-        .map(({ marks, text }) => {
-          const code = marks.map(this.serializeMarks).join('');
-
-          return `${code}${text}${code}`;
-        })
-        .join('');
-    }
-  };
-
-  onKeyDown = (e, editor, next) => {
-    /* refactor */
-    if (isHotKey('mod+b', e)) {
-      e.preventDefault();
-      editor.toggleMark('bold');
-    } else if (isHotKey('mod+i', e)) {
-      e.preventDefault();
-      editor.toggleMark('italic');
-    } else if (isHotKey('mod+u', e)) {
-      e.preventDefault();
-      editor.toggleMark('underline');
-    } else if (isHotKey('mod+m', e)) {
-      e.preventDefault();
-      editor.toggleMark('monospace');
-    } else if (isHotKey('enter', e)) {
-      const {
-        value: { document },
-      } = this.state;
-      const { buffer } = this.props;
-
-      this.props.sendMessageToBuffer(buffer, this.serialize(document));
-
-      this.setState(
-        {
-          value: Value.fromJSON(this.initialValue),
-        },
-        () => {
-          this.editor.focus();
-        },
-      );
-
-      return null;
-    }
-    return next();
-  };
-
-  render() {
-    return (
-      <Container direction="row" className="message-input-container">
-        <div
-          className="message-input-editor-container"
-          onClick={() => this.editor.focus()}
-          ref={this.container}
-        >
-          <Editor
-            autoFocus
-            schema={this.schema}
-            ref={this.refe}
-            onChange={this.onChange}
-            onKeyDown={this.onKeyDown}
-            value={this.state.value}
-            renderNode={this.renderNode}
-            renderMark={this.renderMark}
-            className="message-input-editor"
-            placeholder="Message #general"
-            plugins={this.plugins}
-          />
-        </div>
-        <EmojiPicker onSelect={this.insertEmoji} />
-      </Container>
-    );
-  }
-}
-
-const mapStateToProps = (state, { bid }) => {
-  const {
-    buffer: { entities },
-  } = state;
-
-  console.log(entities, bid)
-  return {
-    buffer: entities[bid].name,
-  };
+  return (
+    <Container direction="row" className="message-input-container">
+      <Editor
+        autoFocus
+        ref={editorRef}
+        schema={schema}
+        onKeyDown={onKeyDown}
+        onChange={({ value }) => setCurrentValue(value)}
+        value={currentValue}
+        renderNode={renderNode}
+        renderMark={renderMark}
+        className="message-input-editor"
+        placeholder="Type a message..."
+      />
+      <EmojiPicker
+        onSelect={insertEmoji}
+        className="message-input-emojipicker"
+      />
+    </Container>
+  );
 };
 
-const mapDispatchToProps = dispatch => ({
-  sendMessageToBuffer: (target, data) => {
-    dispatch({
-      type: 'WS::SEND',
-      payload: {
-        target,
-        data,
-      },
-    });
-  },
-});
+MessageInput.propTypes = {
+  bid: propTypes.string.isRequired,
+  tid: propTypes.string,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MessageInput);
+MessageInput.defaultProps = {
+  tid: null,
+};
+
+export default MessageInput;

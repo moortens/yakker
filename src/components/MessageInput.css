@@ -1,9 +1,7 @@
 .message-input-editor-container {
   width: 100%;
-  height: 100%;
-  padding-right: 5px;
-  padding-left: 5px;
   cursor: text;
+  padding: 15px;
 }
 
 .message-input-menu {
@@ -15,13 +13,20 @@
 
 .message-input-container {
   display: flex;
-  width: 100%; 
-  border-top: 1px solid #ccc;
+  
 }
 
 .message-input-editor {
   vertical-align: top;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  width: calc(100% - 30px);
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  padding: 15px;
 }
 .message-input-monospace {
   background-color: #ececec;
@@ -29,4 +34,14 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-family: monospace;
+}
+
+.message-input-emojipicker {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding: 15px;
+  height: 100%;
 }
