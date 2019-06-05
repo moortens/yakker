@@ -1,6 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { withRouter, Link } from 'react-router-dom';
 
 import TextFormatter from './TextFormatter';
 import Container from './Container';
@@ -9,7 +10,8 @@ import { Settings, Bars } from './Icons';
 import './Header.css';
 import { selectChannelDetails } from '../selectors/channel';
 
-const Header = ({ bid }) => {
+
+const Header = ({ bid, match }) => {
   const { name, topic, count } = useSelector(
     state => selectChannelDetails(state, bid),
     [bid],
@@ -17,7 +19,7 @@ const Header = ({ bid }) => {
 
   return (
     <div className="header-container">
-      <Container direction="row" style={{ alignItems: 'baseline' }}>
+      <Container direction="row" style={{ alignItems: 'baseline', width: '100%' }}>
         <div className="header-name">{name}</div>
         <TextFormatter
           className="header-title"
@@ -27,10 +29,17 @@ const Header = ({ bid }) => {
         />
         <div className="header-nav" style={{ width: '200px' }}>
           <Container direction="row" style={{ alignItems: 'flex-end' }}>
-            <div className="header-nav-item">
+            <Link
+              to={{
+                pathname: `${match.url}/details`,
+                state: {
+                  bid,
+                },
+              }}
+            >
               <Bars />
               {count}
-            </div>
+            </Link>
             <div className="header-nav-item">
               <Settings />
             </div>
@@ -49,4 +58,4 @@ Header.defaultProps = {
   bid: null,
 };
 
-export default Header;
+export default withRouter(Header);

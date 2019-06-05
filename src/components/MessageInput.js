@@ -1,37 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import propTypes from 'prop-types';
 import { Editor } from 'slate-react';
-import { Value } from 'slate';
+import { Value, KeyUtils } from 'slate';
 import { Emoji } from 'emoji-mart';
-import { useDispatch } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import isKeyHotkey from 'is-hotkey';
 
 import Container from './Container';
 import EmojiPicker from './EmojiPicker';
 
 import './MessageInput.css';
-
-const schema = {
-  inlines: {
-    emoji: {
-      isVoid: true,
-    },
-  },
-};
-
-const initialValue = {
-  object: 'value',
-  document: {
-    object: 'document',
-    nodes: [
-      {
-        object: 'block',
-        type: 'paragraph',
-        nodes: [],
-      },
-    ],
-  },
-};
 
 const sendMessageToBuffer = (bid, tid, data) => ({
   type: 'WS::SEND',
@@ -47,63 +25,10 @@ const isItalicHotkey = isKeyHotkey('mod+i');
 const isUnderlineHotkey = isKeyHotkey('mod+u');
 const isMonospaceHotkey = isKeyHotkey('mod+m');
 const isEnterHotkey = isKeyHotkey('enter');
+const isUpHotkey = isKeyHotkey('up');
+const isDownHotkey = isKeyHotkey('up');
 
-const renderNode = (props, editor, next) => {
-  const { attributes, children, node } = props;
 
-  switch (node.type) {
-    case 'paragraph': {
-      return <p {...attributes}>{children}</p>;
-    }
-
-    case 'emoji': {
-      const id = node.data.get('id');
-      return (
-        <span {...attributes} contentEditable={false}>
-          <Emoji emoji={id} set="twitter" size={16} />
-        </span>
-      );
-    }
-
-    default: {
-      return next();
-    }
-  }
-};
-
-const renderMark = (props, editor, next) => {
-  const {
-    children,
-    mark: { type },
-    attributes,
-  } = props;
-
-  switch (type) {
-    case 'bold': {
-      return <strong {...attributes}>{children}</strong>;
-    }
-
-    case 'italic': {
-      return <em {...attributes}>{children}</em>;
-    }
-
-    case 'underline': {
-      return <u {...attributes}>{children}</u>;
-    }
-
-    case 'monospace': {
-      return (
-        <span className="message-input-monospace" {...attributes}>
-          {children}
-        </span>
-      );
-    }
-
-    default: {
-      return next();
-    }
-  }
-};
 
 const serializeMarks = ({ type }) => {
   switch (type) {
@@ -136,7 +61,7 @@ const serialize = node => {
       return node.data.get('native');
     }
   } else if (node.object === 'text') {
-    const leaves = node.getLeaves();
+    /*const leaves = node.getLeaves();
 
     if (leaves === undefined) {
       return node.text;
@@ -148,19 +73,121 @@ const serialize = node => {
 
         return `${code}${text}${code}`;
       })
-      .join('');
+      .join('');*/
+    const { text, marks } = node;
+
+    const code = marks.map(serializeMarks).join('');
+
+    return `${code}${text}${code}`;
   }
   return '';
 };
 
-const MessageInput = ({ bid, tid }) => {
-  const [currentValue, setCurrentValue] = useState(
-    Value.fromJSON(initialValue),
-  );
-  const editorRef = useRef(null);
-  const dispatch = useDispatch();
+const schema = {
+  inlines: {
+    emoji: {
+      isVoid: true,
+    },
+  },
+};
 
-  const onKeyDown = (e, editor, next) => {
+const initialValue = {
+  object: 'value',
+  document: {
+    object: 'document',
+    nodes: [
+      {
+        object: 'block',
+        type: 'paragraph',
+        nodes: [],
+      },
+    ],
+  },
+};
+
+class MessageInput extends React.Component {
+  state = {
+    value: Value.fromJSON(initialValue),
+  };
+
+  editor = null;
+
+  editorRef = editor => {
+    this.editor = editor;
+  };
+
+  renderBlock = (props, editor, next) => {
+    const { attributes, children, node } = props;
+  
+    switch (node.type) {
+      case 'paragraph': {
+        return <p {...attributes}>{children}</p>;
+      }
+
+      default: {
+        return next();
+      }
+    }
+  }
+
+  renderInline = (props, editor, next) => {
+    const { attributes, children, node } = props;
+  
+    switch (node.type) {
+      case 'emoji': {
+        const id = node.data.get('id');
+        
+        return (
+          <span contentEditable={false} {...attributes}>
+            <Emoji emoji={id} set="twitter" size={16} />
+          </span>
+        );
+      }
+  
+      default: {
+        return next();
+      }
+    }
+  };
+  
+  renderMark = (props, editor, next) => {
+    const {
+      children,
+      mark: { type },
+      attributes,
+    } = props;
+  
+    switch (type) {
+      case 'bold': {
+        return <strong {...attributes}>{children}</strong>;
+      }
+  
+      case 'italic': {
+        return <em {...attributes}>{children}</em>;
+      }
+  
+      case 'underline': {
+        return <u {...attributes}>{children}</u>;
+      }
+  
+      case 'monospace': {
+        return (
+          <span className="message-input-monospace" {...attributes}>
+            {children}
+          </span>
+        );
+      }
+  
+      default: {
+        return next();
+      }
+    }
+  };
+  
+  onChange = ({ value }) => this.setState({ value });
+
+  onKeyDown = (e, editor, next) => {
+    const { dispatch, bid, tid } = this.props;
     let mark;
 
     if (isBoldHotkey(e)) {
@@ -177,8 +204,11 @@ const MessageInput = ({ bid, tid }) => {
       } = editor;
 
       dispatch(sendMessageToBuffer(bid, tid, serialize(document)));
-      editor.moveToRangeOfDocument().delete();
-      editor.focus();
+
+      editor
+        .moveToRangeOfDocument()
+        .delete()
+        .focus();
 
       return null;
     } else {
@@ -191,10 +221,10 @@ const MessageInput = ({ bid, tid }) => {
     return null;
   };
 
-  const insertEmoji = e => {
+  insertEmoji = e => {
     const { id, native } = e;
 
-    editorRef.current
+    this.editor
       .insertInline({
         type: 'emoji',
         data: {
@@ -206,27 +236,32 @@ const MessageInput = ({ bid, tid }) => {
       .focus();
   };
 
-  return (
-    <Container direction="row" className="message-input-container">
-      <Editor
-        autoFocus
-        ref={editorRef}
-        schema={schema}
-        onKeyDown={onKeyDown}
-        onChange={({ value }) => setCurrentValue(value)}
-        value={currentValue}
-        renderNode={renderNode}
-        renderMark={renderMark}
-        className="message-input-editor"
-        placeholder="Type a message..."
-      />
-      <EmojiPicker
-        onSelect={insertEmoji}
-        className="message-input-emojipicker"
-      />
-    </Container>
-  );
-};
+  render() {
+    const { value } = this.state;
+
+    return (
+      <Container direction="row" className="message-input-container">
+        <Editor
+          autoFocus
+          ref={this.editorRef}
+          schema={schema}
+          onKeyDown={this.onKeyDown}
+          onChange={this.onChange}
+          value={value}
+          renderInline={this.renderInline}
+          renderBlock={this.renderBlock}
+          renderMark={this.renderMark}
+          className="message-input-editor"
+          placeholder="Type a message..."
+        />
+        <EmojiPicker
+          onSelect={this.insertEmoji}
+          className="message-input-emojipicker"
+        />
+      </Container>
+    );
+  }
+}
 
 MessageInput.propTypes = {
   bid: propTypes.string.isRequired,
@@ -237,4 +272,4 @@ MessageInput.defaultProps = {
   tid: null,
 };
 
-export default MessageInput;
+export default connect()(MessageInput);

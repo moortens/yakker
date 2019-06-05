@@ -1,0 +1,40 @@
+
+.action-time {
+  padding-left: 5px;
+  color: #aaa;
+  font-weight: normal;
+  font-size: 14px;
+  flex-grow: 1;
+  text-align: right;
+}
+
+.action-main {
+  padding-left: 5px;
+}
+
+.action-user {
+  font-weight: bold;
+  color: #333;
+}
+
+.action-avatar {
+  padding-right: 5px;
+}
+
+.action-gutter {
+  flex-grow: 0;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-width: 55px;
+}
+
+.action-container {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.action-data {
+  flex-grow: 1;
+  padding-bottom: 1px;
+}

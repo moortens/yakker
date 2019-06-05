@@ -15,6 +15,9 @@ import {
   faUsers,
   faAngleLeft,
   faAngleRight,
+  faReply,
+  faAsterisk,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -32,3 +35,5 @@ export const Plus = () => <FontAwesomeIcon icon={faPlus} />;
 export const Spinner = () => <FontAwesomeIcon icon={faSpinner} spin />;
 export const AngleLeft = () => <FontAwesomeIcon icon={faAngleLeft} />;
 export const AngleRight = () => <FontAwesomeIcon icon={faAngleRight} />;
+export const Reply = () => <FontAwesomeIcon icon={faReply} />;
+export const Close = () => <FontAwesomeIcon icon={faTimes} />;

@@ -161,7 +161,7 @@ const buildImagePreview = urls => {
   return images;
 };
 
-const TextFormatter = ({ text, embed }) => {
+const TextFormatter = ({ text, embed, ...props }) => {
   const emojiRef = useRef();
 
   useEffect(() => {
@@ -222,10 +222,10 @@ const TextFormatter = ({ text, embed }) => {
   const [images, children] = formatter(blocks);
 
   return (
-    <div>
-      <div ref={emojiRef}>{children}</div>
-      {embed && images}
-    </div>
+    <>
+    <div ref={emojiRef} className={props.className}>{children}</div>
+    {embed && images}
+    </>
   );
 };
 

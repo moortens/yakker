@@ -1,67 +1,104 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { withRouter, Link } from 'react-router-dom';
 import { bufferMessageSelector } from '../selectors/message';
-import Message from './Message';
+import Container from './Container';
+
+import types from './types';
 
 import './MessageList.css';
+import { Reply, AngleRight } from './Icons';
+import useHotKey from './hooks/useHotKey';
 
-const MessageList = ({ bid }) => {
+
+
+const MessageList = ({ bid, match, history }) => {
   const { ids, messages } = useSelector(
     state => bufferMessageSelector(state, bid),
     [bid],
   );
   const { embedUntrustedImages } = useSelector(state => state.settings);
-
-  const isContinouousMessage = idx => {
-    const previousMessage = messages[idx - 1];
-    const currentMessage = messages[idx];
-
-    if (!previousMessage) {
-      return false;
+  
+  useHotKey('alt+t', () => {
+    if (messages.length === 0) {
+      return;
     }
 
-    // hard-coded to 300 seconds per now.
-    return (
-      previousMessage.nick === currentMessage.nick &&
-      (currentMessage.timestamp - previousMessage.timestamp) / 1000 <= 300
-    );
-  };
+    const message = messages[messages.length - 1];
+    const tid = message.parent === null ? message.id : message.parent;
 
-  const showCollapsedList = () => {
-    return messages
+    history.push(`${match.url}/thread/${tid}`, {
+      bid,
+      tid,
+    });
+  });
+
+  const showCollapsedList = () =>
+    messages
       .filter(item => item.parent === null || !ids.includes(item.parent))
       .map((message, idx) => {
-        const replies = messages.filter(item => item.parent === message.id);
+        const { type, nick, timestamp, id } = message;
+        const previous = messages[idx - 1];
+        const tid = id;
+        const thread = messages.filter(
+          item => item.id === id || item.parent === id,
+        );
+        // since the replies array contain the parent element, subtract one.
+        const amount = thread.length - 1;
+
+        const continouous = 
+          previous &&
+          previous.type.toLowerCase() === type.toLowerCase() &&
+          type.toLowerCase() === 'privmsg' &&
+          previous.nick === nick &&
+          previous.parent === null &&
+          (timestamp - previous.timestamp) / 1000 <= 300;
+
+        const Message = types[type.toUpperCase()];
+
+        if (!Message) {
+          return null;
+        }
 
         return (
-          <Message
-            key={message.id}
-            message={message}
-            replies={replies}
-            continouous={isContinouousMessage(idx)}
-            embed={embedUntrustedImages}
-          />
+          <div key={message.id} className="message-item-container">
+            <Message
+              bid={bid}
+              tid={tid}
+              message={message}
+              continouous={continouous}
+              embed={embedUntrustedImages}
+            />
+            {amount > 0 && (
+              <Container direction="row" className="message-reply">
+                <Reply />
+                <Link
+                  className="message-list-reply"
+                  to={{
+                    pathname: `${match.url}/thread/${tid}`,
+                    state: {
+                      tid,
+                      bid,
+                    },
+                  }}
+                >
+                  {amount > 1 ? `${amount} replies...` : `${amount} reply...`}
+                </Link>
+                <div className="message-reply-details">
+                  <AngleRight />
+                </div>
+              </Container>
+            )}
+          </div>
         );
       });
-  };
 
-  return (
-    <div
-      style={{
-        flexGrow: 1,
-        overflow: 'auto',
-        height: '100%',
-        paddingTop: '15px',
-      }}
-    >
-      {showCollapsedList()}
-    </div>
-  );
+  return <div className="message-list-container">{showCollapsedList()}</div>;
 };
 
 MessageList.propTypes = {
   bid: propTypes.string.isRequired,
 };
 
-export default MessageList;
+export default withRouter(MessageList);

@@ -1,0 +1,38 @@
+.thread-container {
+  flex-grow: 1;
+  min-width: 550px;
+  height: 100vh;
+  border-left: 1px solid #ececec;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f8f8;
+}
+
+.thread-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  line-height: 30px;
+  border-bottom: 1px solid #ccc;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  align-items: baseline;
+}
+
+.thread-header-text {
+  color: #333;
+  font-size: 20px;
+}
+
+.thread-header-nicks {
+  color: #aaa;
+  font-size: 12px;
+  flex-grow: 1;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.thread-input {
+  padding: 15px;
+}

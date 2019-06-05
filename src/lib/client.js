@@ -111,10 +111,6 @@ export default class Client extends Connection {
     return status;
   }
 
-  set buffer(buffer = null) {
-    this.dispatch(setCurrentBuffer(buffer));
-  }
-
   get settings() {
     const {
       settings,
@@ -123,12 +119,12 @@ export default class Client extends Connection {
     return settings;
   }
 
-  get buffer() {
+  get buffers() {
     const {
-      buffer: { current },
+      buffer: { entities },
     } = this.getState();
 
-    return current;
+    return entities;
   }
 
   get uids() {
@@ -162,9 +158,9 @@ export default class Client extends Connection {
         if (this.nickname === target) {
           if (e.from_server) {
             // target should be active buffer, or first if no active buffer
-            if (this.buffer != null) {
+            /*if (this.buffer != null) {
               return this.buffer;
-            }
+            }*/
           }
           target = nick;
         }
@@ -391,6 +387,7 @@ export default class Client extends Connection {
     if (fromServer) {
       return;
     }
+    console.log(e);
 
     let bid = this.getBufferIdFromTarget(e);
     let { target } = e;
@@ -445,6 +442,13 @@ export default class Client extends Connection {
   // should be renamed something better
   addUser = (nick, ident, hostname, gecos = null) => {
     let uid = this.uids[nick.toLowerCase()];
+
+    console.log('----')
+    console.log("uid: " + uid)
+    console.log("nick: " + nick)
+    console.log("nick low: " + nick.toLowerCase())
+    
+
     if (uid === null || uid === undefined) {
       uid = uuid();
 
@@ -501,15 +505,27 @@ export default class Client extends Connection {
     const id = tags['draft/msgid'] || uuid();
     const timestamp = Date.parse(tags['server-time']) || new Date();
 
-    const uid = this.addUser(nick, ident, hostname);
-    const bid = this.bids[target.toLowerCase()];
+    //const uid = this.addUser(nick, ident, hostname);
+    //const bid = this.bids[target.toLowerCase()];
 
-    if (!bid) {
-      return;
+    //if (!bid) {
+//      return;
+//    }
+    return;
+    /*this.dispatch(
+      addMessage(id, uid, bid, target, null, 'tagmsg', tags, timestamp),
+    );*/
+  };
+
+  send({ bid, data, tid = null }) {
+    const { name: target } = this.buffers[bid];
+
+    const message = new this.socket.Message('PRIVMSG', target, data);
+
+    if (tid !== null) {
+      message.tags['+draft/reply'] = tid;
     }
 
-    this.dispatch(
-      addMessage(id, uid, bid, target, null, 'tagmsg', tags, timestamp),
-    );
-  };
+    this.socket.raw(message);
+  }
 }

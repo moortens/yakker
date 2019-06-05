@@ -1,0 +1,120 @@
+
+.privmsg-time {
+  padding-left: 5px;
+  color: #aaa;
+  font-weight: normal;
+  font-size: 14px;
+  flex-grow: 1;
+  text-align: right;
+}
+
+.privmsg-user {
+  font-weight: bold;
+  color: #333;
+}
+
+.privmsg-header {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  font-family: 'Roboto', sans-serif;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+.privmsg-gecos {
+  padding-left: 5px;
+  color: #aaa;
+  font-weight: normal;
+  
+}
+
+.privmsg-avatar {
+  padding-right: 5px;
+}
+
+.privmsg-actions {
+  
+  visibility: hidden;
+}
+.message-item-container:hover 
+.privmsg-actions {
+  
+  visibility: visible;
+  color: #ddd;
+}
+
+
+.privmsg-reply-action {
+  padding-left: 5px;
+  text-decoration: none;
+  color: #ddd;
+}
+.privmsg-reply-action:hover {
+  color: #666;
+}
+
+.privmsg-container {
+  width: 100%;
+}
+
+.privmsg-gutter {
+  flex-grow: 0;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-width: 55px;
+}
+
+.privmsg-data {
+  flex-grow: 1;
+  padding-bottom: 1px;
+  font-family: monospace;
+}
+.privmsg-data img {
+  vertical-align: middle;
+}
+
+
+.privmsg:hover .privmsg-icons {
+  visibility: visible;
+}
+
+.privmsg-icons {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  width: 100px;
+  color: #999;
+  box-shadow: 1px 1px 5px 0px #999;
+  
+  top: 0;
+  visibility: hidden;
+}
+
+.privmsg-reply {
+  width: 30%;
+  min-width: 250px;
+  font-size: 12px;
+  padding: 9px;
+  margin-top: 5px;
+  margin-left: 55px;
+}
+.privmsg-list-reply {
+  margin-left: 5px;
+  color: inherit;
+  text-decoration: none;
+  flex-grow: 1;
+}
+
+.privmsg-reply:hover {
+  box-sizing: border-box;
+  border: 1px solid #ececec;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 5px;
+  
+  
+}

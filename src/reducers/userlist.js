@@ -33,7 +33,7 @@ const userlistReducer = (state = initialState, action) => {
           ...state,
           ids: {
             ...state.ids,
-            [nick]: uid,
+            [nick.toLowerCase()]: uid,
           },
           entities: {
             ...state.entities,

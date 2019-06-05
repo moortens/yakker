@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import propTypes from 'prop-types';
+import { Manager, Reference, Popper } from 'react-popper';
 import { Picker } from 'emoji-mart';
 import { Smile } from './Icons';
 
-import Action from './Action';
+import 'emoji-mart/css/emoji-mart.css';
 
-function EmojiPicker({ onSelect }) {
+function EmojiPicker({ onSelect, children, ...props }) {
   const [isOpen, setIsOpen] = useState(false);
-  const pickerRef = useRef(null);
+  const pickerModalRef = useRef(null);
 
   useEffect(() => {
     function closeEmojiPicker(e) {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+      if (
+        pickerModalRef.current &&
+        !pickerModalRef.current.contains(e.target)
+      ) {
         setIsOpen(false);
       }
     }
@@ -23,31 +27,57 @@ function EmojiPicker({ onSelect }) {
   }, [isOpen]);
 
   return (
-    <div className="message-input-menu">
-      {isOpen && (
-        <div
-          style={{ position: 'absolute', bottom: '40px', right: 0 }}
-          ref={pickerRef}
-        >
-          <Picker
-            showPreview={false}
-            set="twitter"
-            showSkinTones={false}
-            onSelect={onSelect}
-          />
-        </div>
-      )}
-      <div style={{ margin: '0 auto' }}>
-        <Action onClickEvent={() => setIsOpen(!isOpen)}>
-          <Smile />
-        </Action>
+    <Manager>
+      <div>
+        <Popper placement="bottom-end">
+          {({ ref, style, placement }) => {
+            if (!isOpen) {
+              return null;
+            }
+
+            return (
+              <div ref={ref} style={style} data-placement={placement}>
+                <div ref={pickerModalRef}>
+                  <Picker
+                    ref={pickerModalRef}
+                    showPreview={false}
+                    set="twitter"
+                    showSkinTones={false}
+                    onSelect={data => {
+                      onSelect(data);
+
+                      setIsOpen(false);
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          }}
+        </Popper>
+        <Reference>
+          {({ ref }) => (
+            <button
+              type="button"
+              onClick={() => setIsOpen(state => !state)}
+              ref={ref}
+              {...props}
+            >
+              {children === null ? <Smile /> : children}
+            </button>
+          )}
+        </Reference>
       </div>
-    </div>
+    </Manager>
   );
 }
 
 EmojiPicker.propTypes = {
   onSelect: propTypes.func.isRequired,
+  children: propTypes.node,
+};
+
+EmojiPicker.defaultProps = {
+  children: null,
 };
 
 export default EmojiPicker;

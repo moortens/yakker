@@ -7,9 +7,7 @@
   padding-top: 15px;
   
   box-sizing: border-box;
-  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.25) !important;
-  z-index: 1;
-  background-color: #ececec;
+  
 }
 
 .header-name {
@@ -21,7 +19,7 @@
   /**
   HACK: setting the width to 0 makes ellipsis work for some reason. 
   */
-  font-size: 14px;
+  font-size: 12px;
   color: #999;
   flex-grow: 1;
   padding-left: 5px;

@@ -43,16 +43,6 @@ export default class Connection {
     this.dispatch(setServerStatus('connecting'));
   }
 
-  send({ target, data, thread = null }) {
-    const message = new this.socket.Message('PRIVMSG', target, data);
-
-    if (thread !== null) {
-      message.tags['+yak/named-thread'] = thread;
-    }
-
-    this.socket.raw(message);
-  }
-
   join(channel) {
     this.socket.join(channel);
   }

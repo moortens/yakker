@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import propTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import Container from './Container';
@@ -9,6 +9,9 @@ import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import Header from './Header';
 import Userlist from './Userlist';
+import Thread from './Thread';
+
+import './Buffer.css';
 
 const Buffer = ({ location: { state: { bid = null } = {} } }) => {
   const buffer = useSelector(state => state.buffer.entities[bid]);
@@ -27,30 +30,58 @@ const Buffer = ({ location: { state: { bid = null } = {} } }) => {
     return <Redirect to="/" />;
   }
 
-  const { channel } = buffer;
-
   return (
     <Container
-      direction="column"
+      direction="row"
       style={{
-        justifyContent: 'space-between',
-        height: '100vh',
-        maxHeight: '100vh',
         width: '100%',
+        height: '100%',
+        maxHeight: '100vh',
       }}
     >
-      <Header bid={bid} />
       <Container
-        direction="row"
+        direction="column"
         style={{
+          justifyContent: 'space-between',
+          height: '100vh',
+          maxHeight: '100vh',
           width: '100%',
-          height: 'inherit',
         }}
       >
-        <MessageList bid={bid} />
-        {channel && <Userlist bid={bid} />}
+        <Header bid={bid} />
+        <Container
+          direction="row"
+          style={{
+            width: '100%',
+            height: 'inherit',
+          }}
+        >
+          <Container
+            direction="column"
+            style={{
+              justifyContent: 'space-between',
+              height: '100%',
+              maxHeight: '100%',
+              width: '100%',
+            }}
+          >
+            <MessageList bid={bid} />
+            <div className="buffer-input">
+              <MessageInput editor="main" bid={bid} />
+            </div>
+          </Container>
+          <Route
+            render={() => <Userlist bid={bid} />}
+            path="/channel/:channel/details"
+            exact
+          />
+        </Container>
       </Container>
-      <MessageInput bid={bid} />
+      <Route
+        render={() => <Thread bid={bid} />}
+        path="/channel/:channel/thread/:tid"
+        exact
+      />
     </Container>
   );
 };

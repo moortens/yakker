@@ -10,6 +10,23 @@
   position: relative;
 }
 
+.message-list-container {
+  flex-grow: 1;
+  overflow: auto;
+  height: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.message-item-container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.message-item-container:hover {
+  background-color: #f8f8f8;
+}
+
 .message-nick {
   
 }
@@ -34,4 +51,36 @@
   
   top: 0;
   visibility: hidden;
+}
+
+.message-reply {
+  width: 30%;
+  min-width: 250px;
+  font-size: 12px;
+  padding: 9px;
+  margin-top: 5px;
+  margin-left: 55px;
+}
+.message-list-reply {
+  margin-left: 5px;
+  color: inherit;
+  text-decoration: none;
+  flex-grow: 1;
+}
+
+.message-reply:hover {
+  box-sizing: border-box;
+  border: 1px solid #ececec;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 5px;
+  
+  
+}
+
+.message-reply-details {
+  display: none;
+}
+.message-reply:hover .message-reply-details {
+  display: block;
 }

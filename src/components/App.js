@@ -3,6 +3,8 @@ import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 
+import useHotKey from './hooks/useHotKey';
+
 import Container from './Container';
 import ChanList from './ChanList';
 import Settings from './Settings';
@@ -10,6 +12,7 @@ import Network from './Network';
 import Loading from './Loading';
 import Sidebar from './Sidebar';
 import Buffer from './Buffer';
+import KeyBindings from './KeyBindings';
 
 import './App.css';
 
@@ -24,6 +27,11 @@ const App = ({ history, location }) => {
     }
   }, [status, channels]);
 
+  useHotKey('mod+,', () => {
+    history.push('/settings');
+  });
+
+
   if (status === 'disconnected') {
     return <Network />;
   }
@@ -35,12 +43,12 @@ const App = ({ history, location }) => {
   return (
     <Container direction="row">
       <Sidebar />
-      <Switch>
-        <Route component={Buffer} path="/channel/:channel" exact />
+      
+        <Route component={Buffer} path="/channel/:channel" />
         <Route component={Buffer} path="/message/:nickname" exact />
         <Route component={ChanList} path="/channels" />
         <Route component={Settings} path="/settings" />
-      </Switch>
+        <Route component={KeyBindings} path="/shortcuts" />
     </Container>
   );
 };
