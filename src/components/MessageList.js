@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ import types from './types';
 import './MessageList.css';
 import { Reply, AngleRight } from './Icons';
 import useHotKey from './hooks/useHotKey';
+import ScrollBar from 'react-perfect-scrollbar';
 
 
 
@@ -19,7 +20,12 @@ const MessageList = ({ bid, match, history }) => {
     [bid],
   );
   const { embedUntrustedImages } = useSelector(state => state.settings);
-  
+  const scrollElm = useRef(null);
+
+  useEffect(() => {
+    scrollElm.current.scrollIntoView({ behaviour: 'smooth' });
+  });
+
   useHotKey('alt+t', () => {
     if (messages.length === 0) {
       return;
@@ -94,7 +100,14 @@ const MessageList = ({ bid, match, history }) => {
         );
       });
 
-  return <div className="message-list-container">{showCollapsedList()}</div>;
+  return (
+    <ScrollBar>
+      <div className="message-list-container">
+        {showCollapsedList()}
+        <div ref={scrollElm} />
+      </div>
+    </ScrollBar>
+  );
 };
 
 MessageList.propTypes = {

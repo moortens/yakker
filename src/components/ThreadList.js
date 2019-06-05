@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import ScrollBar from 'react-perfect-scrollbar';
 
 import types from './types';
 
+
 const ThreadList = ({ thread }) => {
   const { embedUntrustedImages } = useSelector(state => state.settings);
+  const scrollElm = useRef(null);
+
+  useEffect(() => {
+    scrollElm.current.scrollIntoView({ behaviour: 'smooth' });
+  });
 
   const messages = thread.map((message, idx) => {
     const { type, nick, timestamp } = message;
@@ -38,7 +45,12 @@ const ThreadList = ({ thread }) => {
     );
   });
 
-  return <div className="message-list-container">{messages}</div>;
+  return (
+    <ScrollBar>
+      <div className="message-list-container">{messages}</div>
+      <div ref={scrollElm} />
+    </ScrollBar>
+  );
 };
 
 export default withRouter(ThreadList);
