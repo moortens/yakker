@@ -28,7 +28,7 @@ export default () => {
         }
 
         case 'WS::SEND': {
-          client.send(payload);
+          client.parse(payload);
 
           break;
         }

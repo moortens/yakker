@@ -31,6 +31,7 @@
 }
 
 .header-nav {
+  width: auto;
   padding-left: 15px;
 }
 
@@ -41,4 +42,9 @@
 
 .header-nav-item:hover {
   color: #000;
+}
+
+.header-nav-link {
+  color: #ccc;
+  text-decoration: none;
 }

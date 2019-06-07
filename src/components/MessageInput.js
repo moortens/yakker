@@ -184,10 +184,23 @@ class MessageInput extends React.Component {
     }
   };
   
-  onChange = ({ value }) => this.setState({ value });
+  onChange = ({ value }) => { 
+    /*const { document } = value;
+    
+    const node = document.getFirstText();
+    const { text, marks } = node;
+    
+    if (text && marks.size === 0) {
+      const match = text.match(/^\/[^\s|$]+/);
+      console.log(match);
+    }*/
+
+    this.setState({ value })
+  };
 
   onKeyDown = (e, editor, next) => {
     const { dispatch, bid, tid } = this.props;
+    
     let mark;
 
     if (isBoldHotkey(e)) {
@@ -214,9 +227,9 @@ class MessageInput extends React.Component {
     } else {
       return next();
     }
+    console.log(mark)
     e.preventDefault();
-
-    editor.toggleMark(mark);
+    this.editorRef.current.toggleMark(mark);
 
     return null;
   };

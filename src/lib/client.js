@@ -26,6 +26,7 @@ import { setCache } from '../actions/cache';
 
 import addMessage from '../actions/message';
 import history from './history';
+import commands from './commands';
 
 export default class Client extends Connection {
   constructor(getState, dispatch) {
@@ -443,12 +444,6 @@ export default class Client extends Connection {
   addUser = (nick, ident, hostname, gecos = null) => {
     let uid = this.uids[nick.toLowerCase()];
 
-    console.log('----')
-    console.log("uid: " + uid)
-    console.log("nick: " + nick)
-    console.log("nick low: " + nick.toLowerCase())
-    
-
     if (uid === null || uid === undefined) {
       uid = uuid();
 
@@ -517,8 +512,24 @@ export default class Client extends Connection {
     );*/
   };
 
-  send({ bid, data, tid = null }) {
+  parse({ bid, data, tid = null }) {
     const { name: target } = this.buffers[bid];
+
+    const re = /\/([^\s|$]+)(?:\s([^$]+))?/;
+
+    if (re.test(data)) {
+      // we got a command
+      const [, command, trailing] = data.match(re);
+
+      const fn = commands[command.toLowerCase()];
+      if (!fn) {
+        return;
+      }
+
+      Reflect.apply(fn, undefined, [this, target, trailing]);
+
+      return;
+    }
 
     const message = new this.socket.Message('PRIVMSG', target, data);
 
