@@ -43,13 +43,21 @@ const BufferList = () => {
 
   return (
     <div className="channel-list-container">
-      <div className="channel-list-header">Channels:</div>
+      {channels.length > 0 && (
+        <>
+          <div className="channel-list-header">Channels:</div>
+          <Container direction="column">
+            {generateList(channels, true)}
+          </Container>
+        </>
+      )}
 
-      <Container direction="column">{generateList(channels, true)}</Container>
-
-      <div className="channel-list-header">Direct messages:</div>
-
-      <Container direction="column">{generateList(directs)}</Container>
+      {directs.length > 0 && (
+        <>
+          <div className="channel-list-header">Direct messages:</div>
+          <Container direction="column">{generateList(directs)}</Container>
+        </>
+      )}
     </div>
   );
 };

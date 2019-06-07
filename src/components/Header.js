@@ -5,7 +5,7 @@ import { withRouter, Link } from 'react-router-dom';
 
 import TextFormatter from './TextFormatter';
 import Container from './Container';
-import { Settings, Bars } from './Icons';
+import { Settings, Bars, Ellipsis } from './Icons';
 
 import './Header.css';
 import { selectChannelDetails } from '../selectors/channel';
@@ -27,9 +27,10 @@ const Header = ({ bid, match }) => {
           text={topic}
           embed={false}
         />
-        <div className="header-nav" style={{ width: '200px' }}>
+        <div className="header-nav">
           <Container direction="row" style={{ alignItems: 'flex-end' }}>
             <Link
+              className="header-nav-link"
               to={{
                 pathname: `${match.url}/details`,
                 state: {
@@ -41,7 +42,7 @@ const Header = ({ bid, match }) => {
               {count}
             </Link>
             <div className="header-nav-item">
-              <Settings />
+              <Ellipsis />
             </div>
           </Container>
         </div>

@@ -54,4 +54,16 @@ export default class Connection {
 
     this.handlers[event] = fn;
   };
+
+  send({ bid, data, tid = null }) {
+    const { name: target } = this.buffers[bid];
+
+    const message = new this.socket.Message('PRIVMSG', target, data);
+
+    if (tid !== null) {
+      message.tags['+draft/reply'] = tid;
+    }
+
+    this.socket.raw(message);
+  }
 }
