@@ -12,7 +12,6 @@
   "displayUnreadIndicator": false,
 
   "networks": [
-    { "value": "51.68.134.68:7002", "label": "Testnet" },
-    { "value": "127.0.0.1:8080", "label": "Testnet local" }
+    { "value": "127.0.0.1:8080", "label": "Testnet" }
   ]
 }
