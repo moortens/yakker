@@ -1,10 +1,10 @@
 import action from './action';
 import join from './join';
 import part from './part';
+import away from './away';
+import back from './back';
 
-const modules = [
-  action, join, part
-]
+const modules = [action, join, part, away, back];
 
 const commands = modules.flatMap(({ alias, fn }) => {
   return alias.flatMap(command => ({

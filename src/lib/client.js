@@ -280,6 +280,7 @@ export default class Client extends Connection {
     const uid = this.uids[nick.toLowerCase()];
     this.dispatch(
       setUserlistUser(uid, {
+        nick,
         away: true,
       }),
     );
@@ -291,6 +292,7 @@ export default class Client extends Connection {
     const uid = this.uids[nick.toLowerCase()];
     this.dispatch(
       setUserlistUser(uid, {
+        nick,
         away: false,
       }),
     );
