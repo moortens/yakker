@@ -1,0 +1,22 @@
+.alias-container {
+  height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  
+  margin-left: 5px;
+}
+
+.alias-item {
+  width: 100%;
+  padding: 15px;
+  background-color: #ececec;
+  border-bottom: 1px solid #ffff;
+}
+
+.alias-command {
+  font-weight: bold;
+}
+
+.alias-description {
+  font-style: italic;
+}

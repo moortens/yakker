@@ -51,7 +51,7 @@ export default class Client extends Connection {
     this.registerEventHandler('channel list', this.onListEvent);
     this.registerEventHandler('channel list end', this.onListEndEvent);
 
-    this.registerEventHandler('raw', (e) => {
+    this.registerEventHandler('raw', e => {
       console.log(e);
     });
 
@@ -113,9 +113,7 @@ export default class Client extends Connection {
   }
 
   get settings() {
-    const {
-      settings,
-    } = this.getState();
+    const { settings } = this.getState();
 
     return settings;
   }
@@ -231,7 +229,7 @@ export default class Client extends Connection {
   };
 
   onPartEvent = e => {
-    const { nick, ident, hostname, channel: target, message, time } = e;
+    const { nick, channel: target, message, time: timestamp } = e;
 
     const type = 'part';
     const id = uuid();
@@ -246,13 +244,15 @@ export default class Client extends Connection {
         target,
         type,
         nick,
+        message,
+        timestamp,
       }),
     );
     this.dispatch(removeChannelMember(bid, uid));
   };
 
   onQuitEvent = e => {
-    const { nick, message: data, time } = e;
+    const { nick, message: data, time: timestamp } = e;
 
     const id = uuid();
 
@@ -268,6 +268,7 @@ export default class Client extends Connection {
           data,
           type: 'QUIT',
           nick,
+          timestamp,
         }),
       );
       this.dispatch(removeChannelMember(bid, uid));
@@ -275,7 +276,7 @@ export default class Client extends Connection {
   };
 
   onAwayEvent = e => {
-    const { self, nick, message, time } = e;
+    const { self, nick, message } = e;
 
     const uid = this.uids[nick.toLowerCase()];
     this.dispatch(
@@ -287,7 +288,7 @@ export default class Client extends Connection {
   };
 
   onBackEvent = e => {
-    const { self, nick, message, time } = e;
+    const { self, nick, message } = e;
 
     const uid = this.uids[nick.toLowerCase()];
     this.dispatch(
@@ -406,9 +407,12 @@ export default class Client extends Connection {
 
       if (this.settings.notifyPrivateMessages) {
         if (Notification.permission === 'granted') {
-          const notification = new Notification(`Private message from ${nick}`, {
-            body: data,
-          });
+          const notification = new Notification(
+            `Private message from ${nick}`,
+            {
+              body: data,
+            },
+          );
 
           notification.addEventListener('click', e => {
             history.push(`/message/${nick.toLowerCase()}`, {
@@ -497,21 +501,20 @@ export default class Client extends Connection {
   };
 
   onTagmsgEvent = e => {
-    const { nick, ident, hostname, target, tags, time } = e;
+    const { nick, ident, hostname, target, tags, time: timestamp } = e;
 
     const id = tags['draft/msgid'] || uuid();
-    const timestamp = Date.parse(tags['server-time']) || new Date();
 
-    //const uid = this.addUser(nick, ident, hostname);
-    //const bid = this.bids[target.toLowerCase()];
+    const uid = this.addUser(nick, ident, hostname);
+    const bid = this.bids[target.toLowerCase()];
 
-    //if (!bid) {
-//      return;
-//    }
-    return;
-    /*this.dispatch(
-      addMessage(id, uid, bid, target, null, 'tagmsg', tags, timestamp),
-    );*/
+    if (!bid) {
+      return;
+    }
+
+    this.dispatch(
+      addMessage({ id, uid, bid, target, type: 'tagmsg', tags, timestamp }),
+    );
   };
 
   parse({ bid, data, tid = null }) {

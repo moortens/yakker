@@ -59,3 +59,9 @@
 .message-input-emojipicker:hover {
   color: #333;
 }
+
+.messageinput-command {
+  
+  font-weight: bold;
+  
+}

@@ -11,7 +11,8 @@ const messageState = {
   bid: null,
   data: null,
   type: null, // notice, action, privmsg, tagmsg, join, part
-
+  nick: null,
+  tags: [],
   timestamp: null,
 };
 
