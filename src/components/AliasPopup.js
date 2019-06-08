@@ -30,7 +30,7 @@ const data = [
   },
 ];
 
-const AliasPopup = ({ children, open, command, onSelect }) => {
+const AliasPopup = ({ children, open, command, onItemChange }) => {
   const referenceNode = useRef();
   const activeRef = useRef();
   const [index, setIndex] = useState(0);
@@ -52,8 +52,14 @@ const AliasPopup = ({ children, open, command, onSelect }) => {
   useEffect(() => {
     if (activeRef && activeRef.current) {
       activeRef.current.scrollIntoView({ behaviour: 'smooth' });
+
+      const arr = data.filter(({ alias }) => alias.includes(command));
+
+      if (arr.length) {
+        onItemChange(arr[index]);
+      }
     }
-  }, [activeRef, index]);
+  }, [activeRef, index, command, onItemChange]);
 
   const render = () => {
     return data

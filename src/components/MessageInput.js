@@ -26,6 +26,7 @@ const isItalicHotkey = isKeyHotkey('mod+i');
 const isUnderlineHotkey = isKeyHotkey('mod+u');
 const isMonospaceHotkey = isKeyHotkey('mod+m');
 const isEnterHotkey = isKeyHotkey('enter');
+const isTabHotkey = isKeyHotkey('tab');
 
 const serializeMarks = ({ type }) => {
   switch (type) {
@@ -98,6 +99,7 @@ class MessageInput extends React.Component {
   state = {
     aliasPopup: false,
     aliasFilter: '',
+    command: null,
     value: Value.fromJSON(initialValue),
   };
 
@@ -216,7 +218,28 @@ class MessageInput extends React.Component {
     const { dispatch, bid, tid } = this.props;
 
     let mark;
-    if (isBoldHotkey(e)) {
+    if (isTabHotkey(e)) {
+      const {
+        value: { document },
+      } = editor;
+      const { aliasPopup, command } = this.state;
+
+      if (aliasPopup && command) {
+        const { alias } = command;
+        const { text } = document.getFirstText();
+
+        e.preventDefault();
+
+        this.setState({ aliasPopup: false, aliasFilter: '' }, () => {
+          editor
+            .deleteBackward(text.length)
+            .insertText(alias)
+            .focus();
+        });
+
+        return null;
+      }
+    } else if (isBoldHotkey(e)) {
       mark = 'bold';
     } else if (isItalicHotkey(e)) {
       mark = 'italic';
@@ -262,11 +285,19 @@ class MessageInput extends React.Component {
       .focus();
   };
 
+  onItemChange = command => {
+    this.setState({ command });
+  };
+
   render() {
     const { aliasPopup, aliasFilter, value } = this.state;
 
     return (
-      <AliasPopup open={aliasPopup} command={aliasFilter}>
+      <AliasPopup
+        open={aliasPopup}
+        command={aliasFilter}
+        onItemChange={this.onItemChange}
+      >
         <Container direction="row" className="message-input-container">
           <Editor
             autoFocus
