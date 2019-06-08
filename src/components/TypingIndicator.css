@@ -1,0 +1,9 @@
+.typing-container {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 2px;
+  
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  width: 100%;
+}

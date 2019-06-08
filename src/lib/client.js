@@ -35,6 +35,8 @@ export default class Client extends Connection {
     this.getState = getState;
     this.dispatch = dispatch;
 
+    this.typings = {};
+
     this.registerEventHandler('connected', this.onConnectedEvent);
     this.registerEventHandler('join', this.onJoinEvent);
     this.registerEventHandler('message', this.onMessageEvent);
@@ -501,14 +503,62 @@ export default class Client extends Connection {
   };
 
   onTagmsgEvent = e => {
-    const { nick, ident, hostname, target, tags, time: timestamp } = e;
+    const {
+      nick,
+      ident,
+      hostname,
+      target,
+      tags,
+      time: timestamp = new Date(),
+    } = e;
 
     const id = tags['draft/msgid'] || uuid();
+    const typing = tags['+draft/typing'];
 
     const uid = this.addUser(nick, ident, hostname);
     const bid = this.bids[target.toLowerCase()];
 
     if (!bid) {
+      return;
+    }
+
+    if (typing) {
+      if (this.typings[uid]) {
+        clearTimeout(this.typings[uid]);
+      }
+
+      if (typing === 'active' || typing === 'paused') {
+        this.dispatch({
+          type: 'TYPING_ADD_USER',
+          payload: {
+            uid,
+            bid,
+            timestamp,
+          },
+        });
+
+        this.typings[uid] = setTimeout(
+          () => {
+            this.dispatch({
+              type: 'TYPING_DELETE_USER',
+              payload: {
+                uid,
+                bid,
+              },
+            });
+          },
+          typing === 'paused' ? 30000 : 6000,
+        );
+      } else if (typing === 'done') {
+        this.dispatch({
+          type: 'TYPING_DELETE_USER',
+          payload: {
+            uid,
+            bid,
+          },
+        });
+      }
+
       return;
     }
 

@@ -8,6 +8,7 @@ import buffer from './buffer';
 import chanlist from './chanlist';
 import cache from './cache';
 import settings from './settings';
+import typing from './typing';
 
 export default combineReducers({
   buffer,
@@ -18,4 +19,5 @@ export default combineReducers({
   chanlist,
   cache,
   settings,
+  typing,
 });
