@@ -36,18 +36,24 @@ const AliasPopup = ({ children, open, command, onSelect }) => {
   const [index, setIndex] = useState(0);
 
   useHotKey('down', () => {
-    setIndex(prev => (prev + 1) % data.length);
-    if (activeRef && activeRef.current) {
-      activeRef.current.scrollIntoView();
-    }
+    setIndex(
+      prev =>
+        (prev + 1) % data.filter(({ alias }) => alias.includes(command)).length,
+    );
+  });
+  useHotKey('up', () => {
+    setIndex(prev => {
+      const arr = data.filter(({ alias }) => alias.includes(command));
+
+      return (prev - 1 + arr.length) % arr.length;
+    });
   });
 
-  useHotKey('up', () => {
-    setIndex(prev => (prev - 1 + data.length) % data.length);
+  useEffect(() => {
     if (activeRef && activeRef.current) {
-      activeRef.current.scrollIntoView();
+      activeRef.current.scrollIntoView({ behaviour: 'smooth' });
     }
-  });
+  }, [activeRef, index]);
 
   const render = () => {
     return data
