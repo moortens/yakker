@@ -1,16 +1,19 @@
 .alias-container {
-  height: 400px;
+  height: 200px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  
   margin-left: 5px;
 }
 
 .alias-item {
   width: 100%;
   padding: 15px;
-  background-color: #ececec;
-  border-bottom: 1px solid #ffff;
+  background-color:inherit;
+  border-bottom: 1px solid #ccc;
+}
+.alias-item-active,
+.alias-item:hover {
+  background-color: #eee;
 }
 
 .alias-command {
@@ -20,3 +23,9 @@
 .alias-description {
   font-style: italic;
 }
+
+.alias-parameters {
+  margin-left: 5px;
+  font-weight: normal;
+}
+

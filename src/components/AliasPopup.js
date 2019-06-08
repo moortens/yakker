@@ -1,16 +1,22 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import propTypes from 'prop-types';
 import { Manager, Reference, Popper } from 'react-popper';
+import ScrollBar from 'react-perfect-scrollbar';
+import classnames from 'classnames';
+
+import useHotKey from './hooks/useHotKey';
 
 import './AliasPopup.css';
 
 const data = [
   {
-    alias: '/join #channel',
+    alias: '/join',
+    parameters: '#channel',
     description: 'Join a channel with the given name',
   },
   {
-    alias: '/away message',
+    alias: '/away',
+    parameters: '[message]',
     description: 'Set your status to away',
   },
   {
@@ -19,12 +25,59 @@ const data = [
   },
   {
     alias: '/me',
-    description: 'Write an action',
+    parameters: '[message]',
+    description: 'Sends your message as an action',
   },
 ];
 
-const AliasPopup = ({ children, open, command }) => {
+const AliasPopup = ({ children, open, command, onSelect }) => {
   const referenceNode = useRef();
+  const activeRef = useRef();
+  const [index, setIndex] = useState(0);
+
+  useHotKey('down', () => {
+    setIndex(prev => (prev + 1) % data.length);
+    if (activeRef && activeRef.current) {
+      activeRef.current.scrollIntoView();
+    }
+  });
+
+  useHotKey('up', () => {
+    setIndex(prev => (prev - 1 + data.length) % data.length);
+    if (activeRef && activeRef.current) {
+      activeRef.current.scrollIntoView();
+    }
+  });
+
+  const render = () => {
+    return data
+      .filter(({ alias }) => alias.includes(command))
+      .map(({ alias, parameters, description }, idx) => {
+        const klasses = classnames('alias-item', {
+          'alias-item-active': idx === index,
+        });
+
+        const details = (
+          <>
+            <div className="alias-item-header">
+              <span className="alias-command">{alias}</span>
+              <span className="alias-parameters">{parameters}</span>
+            </div>
+            <div className="alias-description">{description}</div>
+          </>
+        );
+
+        return idx === index ? (
+          <div key={alias} className={klasses} ref={activeRef}>
+            {details}
+          </div>
+        ) : (
+          <div key={alias} className={klasses}>
+            {details}
+          </div>
+        );
+      });
+  };
 
   return (
     <Manager>
@@ -52,26 +105,17 @@ const AliasPopup = ({ children, open, command }) => {
               style={styles}
               data-placement={placement}
             >
-              {data
-                .filter(({ alias }) => alias.includes(command))
-                .map(({ alias, description }) => (
-                  <div className="alias-item">
-                    <div className="alias-command">{alias}</div>
-                    <div className="alias-description">{description}</div>
-                  </div>
-                ))}
+              <ScrollBar>{render()}</ScrollBar>
             </div>
           );
         }}
       </Popper>
       <Reference
-        innerRef={node => referenceNode.current = node}
+        innerRef={node => {
+          referenceNode.current = node;
+        }}
       >
-        {({ ref }) => (
-          <div ref={ref}>
-            {children}
-          </div>
-        )}
+        {({ ref }) => <div ref={ref}>{children}</div>}
       </Reference>
     </Manager>
   );
