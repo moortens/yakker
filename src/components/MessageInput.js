@@ -67,7 +67,7 @@ const serialize = node => {
       return node.data.get('native');
     }
   } else if (node.object === 'text') {
-  /*
+    /*
       
       NOTE: this is here, due to the fact that slate 0.46-0.47 has an error 
       with toggleMark and splitting blocks. Since the introduction of annotations
@@ -100,22 +100,21 @@ const serialize = node => {
       .join('');
 
 */
-      const { text, marks } = node;
+    const { text, marks } = node;
 
-      const serializedMarks = marks.map(serializeMarks);
-      
-      const startCode = serializedMarks
-        .map(([code, color]) => {
-          if (color) {
-            return `${code}${color}`;
-          }
-          return color;
-        })
-        .join('');
-      const endCode = serializedMarks.map(([code]) => code).join('');
+    const serializedMarks = marks.map(serializeMarks);
 
-      return `${startCode}${text}${endCode}`;
-    
+    const startCode = serializedMarks
+      .map(([code, color]) => {
+        if (color) {
+          return `${code}${color}`;
+        }
+        return color;
+      })
+      .join('');
+    const endCode = serializedMarks.map(([code]) => code).join('');
+
+    return `${startCode}${text}${endCode}`;
   }
   return '';
 };
@@ -307,7 +306,7 @@ class MessageInput extends React.Component {
       }
 
       dispatch(sendMessageToBuffer(bid, tid, serialize(document)));
-      
+
       editor
         .moveToRangeOfDocument()
         .delete()
@@ -370,7 +369,7 @@ class MessageInput extends React.Component {
     const { colorPicker, aliasPicker, aliasFilter, value } = this.state;
 
     return (
-      <ColorPicker open={colorPicker} onItemChange={this.onColorSelect}>
+      <ColorPicker open={colorPicker} onItemChange={() => null}>
         <AliasPicker
           open={aliasPicker}
           command={aliasFilter}
