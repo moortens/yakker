@@ -8,7 +8,7 @@ import isKeyHotkey from 'is-hotkey';
 
 import Container from './Container';
 import EmojiPicker from './EmojiPicker';
-import AliasPopup from './AliasPopup';
+import AliasPicker from './AliasPicker';
 
 import './MessageInput.css';
 
@@ -97,7 +97,7 @@ const initialValue = {
 
 class MessageInput extends React.Component {
   state = {
-    aliasPopup: false,
+    aliasPicker: false,
     aliasFilter: '',
     command: null,
     value: Value.fromJSON(initialValue),
@@ -201,14 +201,14 @@ class MessageInput extends React.Component {
     const re = /^\/([^\s|$]+)?/;
 
     if (re.test(text)) {
-      this.setState({ aliasPopup: true });
+      this.setState({ aliasPicker: true });
 
       const [, command] = text.match(re);
       if (command) {
         this.setState({ aliasFilter: command });
       }
     } else {
-      this.setState({ aliasPopup: false, aliasFilter: '' });
+      this.setState({ aliasPicker: false, aliasFilter: '' });
     }
 
     this.setState({ value });
@@ -222,15 +222,15 @@ class MessageInput extends React.Component {
       const {
         value: { document },
       } = editor;
-      const { aliasPopup, command } = this.state;
+      const { aliasPicker, command } = this.state;
 
-      if (aliasPopup && command) {
+      if (aliasPicker && command) {
         const { alias } = command;
         const { text } = document.getFirstText();
 
         e.preventDefault();
 
-        this.setState({ aliasPopup: false, aliasFilter: '' }, () => {
+        this.setState({ aliasPicker: false, aliasFilter: '' }, () => {
           editor
             .deleteBackward(text.length)
             .insertText(alias)
@@ -290,11 +290,11 @@ class MessageInput extends React.Component {
   };
 
   render() {
-    const { aliasPopup, aliasFilter, value } = this.state;
+    const { aliasPicker, aliasFilter, value } = this.state;
 
     return (
-      <AliasPopup
-        open={aliasPopup}
+      <AliasPicker
+        open={aliasPicker}
         command={aliasFilter}
         onItemChange={this.onItemChange}
       >
@@ -318,7 +318,7 @@ class MessageInput extends React.Component {
             className="message-input-emojipicker"
           />
         </Container>
-      </AliasPopup>
+      </AliasPicker>
     );
   }
 }

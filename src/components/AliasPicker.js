@@ -6,7 +6,7 @@ import classnames from 'classnames';
 
 import useHotKey from './hooks/useHotKey';
 
-import './AliasPopup.css';
+import './AliasPicker.css';
 
 const data = [
   {
@@ -30,7 +30,7 @@ const data = [
   },
 ];
 
-const AliasPopup = ({ children, open, command, onItemChange }) => {
+const AliasPicker = ({ children, open, command, onItemChange }) => {
   const referenceNode = useRef();
   const activeRef = useRef();
   const [index, setIndex] = useState(0);
@@ -133,15 +133,16 @@ const AliasPopup = ({ children, open, command, onItemChange }) => {
   );
 };
 
-AliasPopup.propTypes = {
+AliasPicker.propTypes = {
   children: propTypes.node.isRequired,
+  onItemChange: propTypes.func.isRequired,
   open: propTypes.bool,
   command: propTypes.string,
 };
 
-AliasPopup.defaultProps = {
+AliasPicker.defaultProps = {
   open: false,
   command: '',
 };
 
-export default AliasPopup;
+export default AliasPicker;
