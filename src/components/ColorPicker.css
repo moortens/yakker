@@ -1,0 +1,24 @@
+.color-item {
+  height: 25px;
+  min-width: 25px;
+}
+
+.color-item-container {
+  width: 100%;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.color-item-active {
+  border: 3px outset #ccc;
+}
+
+.color-container {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-left: 5px;
+}

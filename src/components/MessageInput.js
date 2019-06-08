@@ -11,6 +11,7 @@ import EmojiPicker from './EmojiPicker';
 import AliasPicker from './AliasPicker';
 
 import './MessageInput.css';
+import ColorPicker from './ColorPicker';
 
 const sendMessageToBuffer = (bid, tid, data) => ({
   type: 'WS::SEND',
@@ -27,22 +28,29 @@ const isUnderlineHotkey = isKeyHotkey('mod+u');
 const isMonospaceHotkey = isKeyHotkey('mod+m');
 const isEnterHotkey = isKeyHotkey('enter');
 const isTabHotkey = isKeyHotkey('tab');
+const isCtrlKHotKey = isKeyHotkey('ctrl+k');
 
-const serializeMarks = ({ type }) => {
+const serializeMarks = ({ type, data }) => {
   switch (type) {
     case 'bold': {
-      return '\x02';
+      return ['\x02'];
     }
     case 'italic': {
-      return '\x1D';
+      return ['\x1D'];
     }
 
     case 'underline': {
-      return '\x1F';
+      return ['\x1F'];
     }
 
     case 'monospace': {
-      return '\x11';
+      return ['\x11'];
+    }
+
+    case 'color': {
+      const color = data.get('color');
+
+      return ['\x03', color];
     }
 
     default:
@@ -59,11 +67,55 @@ const serialize = node => {
       return node.data.get('native');
     }
   } else if (node.object === 'text') {
-    const { text, marks } = node;
+  /*
+      
+      NOTE: this is here, due to the fact that slate 0.46-0.47 has an error 
+      with toggleMark and splitting blocks. Since the introduction of annotations
+      in 0.47 slate also changed the output. Fix this when we upgrade, below is
+      working code fo 0.45.
 
-    const code = marks.map(serializeMarks).join('');
+  
+  const leaves = node.getLeaves();
 
-    return `${code}${text}${code}`;
+    if (leaves === undefined) {
+      return node.text;
+    }
+
+    return leaves
+      .map(({ marks, text }) => {
+        const serializedMarks = marks.map(serializeMarks);
+
+        const startCode = serializedMarks
+          .map(([code, color]) => {
+            if (color) {
+              return `${code}${color}`;
+            }
+            return color;
+          })
+          .join('');
+        const endCode = serializedMarks.map(([code]) => code).join('');
+
+        return `${startCode}${text}${endCode}`;
+      })
+      .join('');
+
+*/
+      const { text, marks } = node;
+
+      const serializedMarks = marks.map(serializeMarks);
+      
+      const startCode = serializedMarks
+        .map(([code, color]) => {
+          if (color) {
+            return `${code}${color}`;
+          }
+          return color;
+        })
+        .join('');
+      const endCode = serializedMarks.map(([code]) => code).join('');
+
+      return `${startCode}${text}${endCode}`;
+    
   }
   return '';
 };
@@ -72,11 +124,6 @@ const schema = {
   inlines: {
     emoji: {
       isVoid: true,
-    },
-  },
-  annotations: {
-    command: {
-      isAtomic: true,
     },
   },
 };
@@ -90,6 +137,7 @@ const initialValue = {
         object: 'block',
         type: 'paragraph',
         nodes: [],
+        marks: [],
       },
     ],
   },
@@ -97,6 +145,7 @@ const initialValue = {
 
 class MessageInput extends React.Component {
   state = {
+    colorPicker: false,
     aliasPicker: false,
     aliasFilter: '',
     command: null,
@@ -107,23 +156,6 @@ class MessageInput extends React.Component {
 
   editorRef = editor => {
     this.editor = editor;
-  };
-
-  renderAnnotation = (props, _editor, next) => {
-    const { children, annotation, attributes } = props;
-
-    switch (annotation.type) {
-      case 'command': {
-        return (
-          <span {...attributes} className="messageinput-command">
-            {children}
-          </span>
-        );
-      }
-      default: {
-        return next();
-      }
-    }
   };
 
   renderBlock = (props, _editor, next) => {
@@ -163,7 +195,7 @@ class MessageInput extends React.Component {
   renderMark = (props, _editor, next) => {
     const {
       children,
-      mark: { type },
+      mark: { type, data },
       attributes,
     } = props;
 
@@ -183,6 +215,16 @@ class MessageInput extends React.Component {
       case 'monospace': {
         return (
           <span className="message-input-monospace" {...attributes}>
+            {children}
+          </span>
+        );
+      }
+
+      case 'color': {
+        const color = data.get('color');
+
+        return (
+          <span className={`foreground-${color}`} {...attributes}>
             {children}
           </span>
         );
@@ -239,6 +281,13 @@ class MessageInput extends React.Component {
 
         return null;
       }
+    } else if (isCtrlKHotKey(e)) {
+      const { colorPicker } = this.state;
+      this.setState({ colorPicker: !colorPicker });
+
+      e.preventDefault();
+
+      return null;
     } else if (isBoldHotkey(e)) {
       mark = 'bold';
     } else if (isItalicHotkey(e)) {
@@ -252,12 +301,19 @@ class MessageInput extends React.Component {
         value: { document },
       } = editor;
 
-      dispatch(sendMessageToBuffer(bid, tid, serialize(document)));
+      if (this.state.colorPicker) {
+        e.preventDefault();
+        return null;
+      }
 
+      dispatch(sendMessageToBuffer(bid, tid, serialize(document)));
+      
       editor
         .moveToRangeOfDocument()
         .delete()
         .focus();
+
+      e.preventDefault();
 
       return null;
     } else {
@@ -265,7 +321,7 @@ class MessageInput extends React.Component {
     }
 
     e.preventDefault();
-    this.editorRef.current.toggleMark(mark);
+    this.editor.toggleMark(mark);
 
     return null;
   };
@@ -289,36 +345,58 @@ class MessageInput extends React.Component {
     this.setState({ command });
   };
 
+  onColorSelect = color => {
+    this.setState({ colorPicker: false });
+
+    const {
+      value: { marks },
+    } = this.editor;
+
+    marks
+      .filter(mark => mark.type === 'color')
+      .forEach(mark => this.editor.removeMark(mark));
+
+    this.editor
+      .addMark({
+        type: 'color',
+        data: {
+          color,
+        },
+      })
+      .focus();
+  };
+
   render() {
-    const { aliasPicker, aliasFilter, value } = this.state;
+    const { colorPicker, aliasPicker, aliasFilter, value } = this.state;
 
     return (
-      <AliasPicker
-        open={aliasPicker}
-        command={aliasFilter}
-        onItemChange={this.onItemChange}
-      >
-        <Container direction="row" className="message-input-container">
-          <Editor
-            autoFocus
-            ref={this.editorRef}
-            schema={schema}
-            onKeyDown={this.onKeyDown}
-            onChange={this.onChange}
-            value={value}
-            renderInline={this.renderInline}
-            renderBlock={this.renderBlock}
-            renderMark={this.renderMark}
-            renderAnnotation={this.renderAnnotation}
-            className="message-input-editor"
-            placeholder="Type a message..."
-          />
-          <EmojiPicker
-            onSelect={this.insertEmoji}
-            className="message-input-emojipicker"
-          />
-        </Container>
-      </AliasPicker>
+      <ColorPicker open={colorPicker} onItemChange={this.onColorSelect}>
+        <AliasPicker
+          open={aliasPicker}
+          command={aliasFilter}
+          onItemChange={this.onItemChange}
+        >
+          <Container direction="row" className="message-input-container">
+            <Editor
+              autoFocus
+              ref={this.editorRef}
+              schema={schema}
+              onKeyDown={this.onKeyDown}
+              onChange={this.onChange}
+              value={value}
+              renderInline={this.renderInline}
+              renderBlock={this.renderBlock}
+              renderMark={this.renderMark}
+              className="message-input-editor"
+              placeholder="Type a message..."
+            />
+            <EmojiPicker
+              onSelect={this.insertEmoji}
+              className="message-input-emojipicker"
+            />
+          </Container>
+        </AliasPicker>
+      </ColorPicker>
     );
   }
 }
