@@ -6,6 +6,8 @@ import { channelsSelector } from '../selectors/userlist';
 
 import './Userlist.css';
 import Container from './Container';
+import classnames from 'classnames';
+import Avatar from './Avatar';
 
 const Userlist = ({ bid }) => {
   const [searchInput, setSearchInput] = useState('');
@@ -87,19 +89,15 @@ const Userlist = ({ bid }) => {
           <header>{name}</header>
           {users.map(user => {
             const { away = false } = user;
+            const klasses = classnames('userlist-nick', {
+              'userlist-away': away,
+            });
 
             return (
-              <Container
-                direction="row"
-                style={{ alignItems: 'center', paddingLeft: '5px' }}
-              >
-                {away ? (
-                  <div className="userlist-away" />
-                ) : (
-                  <div className="userlist-symbol" />
-                )}
-                <div className="userlist-item">{user.nick}</div>
-              </Container>
+              <div className="userlist-item-container">
+                <Avatar text={user.nick} small />
+                <div className={klasses}>{user.nick}</div>
+              </div>
             );
           })}
         </div>
@@ -108,9 +106,7 @@ const Userlist = ({ bid }) => {
   };
 
   return (
-    <div
-      style={{ width: '200px', borderLeft: '1px solid #ccc', flexShrink: 0 }}
-    >
+    <div className="userlist-container">
       <div className="userlist-search">
         <input
           className="userlist-search-input"

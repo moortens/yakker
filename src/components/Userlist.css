@@ -1,29 +1,19 @@
-.userlist-item {
-  padding-left: 3px;
-  padding-bottom: 4px;
-  padding-top: 4px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-.userlist-item:hover {
-  background-color: #ececec;
-}
-
 .userlist-away {
   color: #ddd;
 }
 
 .userlist-search {
   width: 100%;
-  height: 30px;
-  border-bottom: 1px solid #ccc;
+  height: auto;
 }
 
 .userlist-search-input {
-  width: inherit;
-  border: 0px;
+  width: calc(100% - 30px);
+  margin: 15px;
   height: 29px;
-  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px;
   line-height: 29px;
 }
 
@@ -39,49 +29,20 @@
   width: 100%;
   
 }
-.userlist-item-administrator,
-.userlist-mode-administrator {
-  
-}
-
-.userlist-item-operator,
-.userlist-mode-operator {
-  margin-bottom: 1px;
-  color: blue;
-}
-
-.userlist-mode-founder {
-  margin-bottom: 1px;
-  color: green;
-}
-
-.userlist-mode-protected {
-  margin-bottom: 1px;
-  color: yellow;
-}
-
-.userlist-mode-members {
-  margin-bottom: 1px;
-  color: pink;
-}
-
-.userlist-mode-operator {
-  color: black;
-  margin-bottom: 1px;
-}
-
-.userlist-mode {
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
 
 .userlist-mode-administrators header,
 .userlist-mode-founder header,
 .userlist-mode-operators header,
 .userlist-mode-protected header,
+.userlist-mode-voice header,
 .userlist-mode-members header {
-  padding-left: 5px;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding-left: 15px;
   color: #999;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 .userlist-mode-members {
   color: black;
@@ -89,8 +50,8 @@
 }
 
 .userlist-symbol {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   vertical-align: middle;
   color: lightgreen;
   border: 1px solid #999;
@@ -99,11 +60,30 @@
 }
 
 .userlist-away {
-  width: 8px;
-  height: 8px;
-  vertical-align: middle;
-  color: orangered;
-  border: 1px solid #999;
-  border-radius: 50%;
-  background-color: orangered;
+  color: #ccc !important;
+}
+
+.userlist-container {
+  width: 250px;
+  border-left: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+.userlist-item-container {
+  display: flex;
+  align-content: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.userlist-item-container:hover {
+  background-color: #f4f4f4;
+}
+
+.userlist-nick {
+  padding-left: 5px;
+  
+  font-family: 'Roboto', sans-serif;
 }
