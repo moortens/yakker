@@ -1,16 +1,16 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
 import { Editor } from 'slate-react';
-import { Value, KeyUtils } from 'slate';
+import { Value } from 'slate';
 import { Emoji } from 'emoji-mart';
-import { useDispatch, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import isKeyHotkey from 'is-hotkey';
 
 import Container from './Container';
 import EmojiPicker from './EmojiPicker';
+import AliasPopup from './AliasPopup';
 
 import './MessageInput.css';
-import AliasPopup from './AliasPopup';
 
 const sendMessageToBuffer = (bid, tid, data) => ({
   type: 'WS::SEND',
@@ -26,8 +26,6 @@ const isItalicHotkey = isKeyHotkey('mod+i');
 const isUnderlineHotkey = isKeyHotkey('mod+u');
 const isMonospaceHotkey = isKeyHotkey('mod+m');
 const isEnterHotkey = isKeyHotkey('enter');
-const isUpHotkey = isKeyHotkey('up');
-const isDownHotkey = isKeyHotkey('up');
 
 const serializeMarks = ({ type }) => {
   switch (type) {
@@ -60,19 +58,6 @@ const serialize = node => {
       return node.data.get('native');
     }
   } else if (node.object === 'text') {
-    /*const leaves = node.getLeaves();
-
-    if (leaves === undefined) {
-      return node.text;
-    }
-
-    return leaves
-      .map(({ marks, text }) => {
-        const code = marks.map(serializeMarks).join('');
-
-        return `${code}${text}${code}`;
-      })
-      .join('');*/
     const { text, marks } = node;
 
     const code = marks.map(serializeMarks).join('');
@@ -122,8 +107,7 @@ class MessageInput extends React.Component {
     this.editor = editor;
   };
 
-  renderAnnotation = (props, editor, next) => {
-    console.log('ever here?');
+  renderAnnotation = (props, _editor, next) => {
     const { children, annotation, attributes } = props;
 
     switch (annotation.type) {
@@ -140,7 +124,7 @@ class MessageInput extends React.Component {
     }
   };
 
-  renderBlock = (props, editor, next) => {
+  renderBlock = (props, _editor, next) => {
     const { attributes, children, node } = props;
 
     switch (node.type) {
@@ -154,8 +138,8 @@ class MessageInput extends React.Component {
     }
   };
 
-  renderInline = (props, editor, next) => {
-    const { attributes, children, node } = props;
+  renderInline = (props, _editor, next) => {
+    const { attributes, node } = props;
 
     switch (node.type) {
       case 'emoji': {
@@ -174,7 +158,7 @@ class MessageInput extends React.Component {
     }
   };
 
-  renderMark = (props, editor, next) => {
+  renderMark = (props, _editor, next) => {
     const {
       children,
       mark: { type },
@@ -211,26 +195,26 @@ class MessageInput extends React.Component {
   onChange = ({ value }) => {
     const { document } = value;
     const { text } = document.getFirstText();
-    
-      const re = /^\/([^\s|$]+)?/;
 
-      if (re.test(text)) {
-        this.setState(prev => ({ aliasPopup: true }));
+    const re = /^\/([^\s|$]+)?/;
 
-        const [, command] = text.match(re);
-        if (command) {
-          this.setState(prev => ({ aliasFilter: command }));
-        }
-      } else {
-        this.setState({ aliasPopup: false, aliasFilter: '' });
+    if (re.test(text)) {
+      this.setState({ aliasPopup: true });
+
+      const [, command] = text.match(re);
+      if (command) {
+        this.setState({ aliasFilter: command });
       }
-    
+    } else {
+      this.setState({ aliasPopup: false, aliasFilter: '' });
+    }
 
     this.setState({ value });
   };
 
   onKeyDown = (e, editor, next) => {
     const { dispatch, bid, tid } = this.props;
+
     let mark;
     if (isBoldHotkey(e)) {
       mark = 'bold';
@@ -309,6 +293,7 @@ class MessageInput extends React.Component {
 }
 
 MessageInput.propTypes = {
+  dispatch: propTypes.func.isRequired,
   bid: propTypes.string.isRequired,
   tid: propTypes.string,
 };
