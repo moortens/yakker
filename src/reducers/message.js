@@ -60,6 +60,47 @@ export default (state = initialState, action) => {
       });
     }
 
+    case 'MESSAGE_UPDATE': {
+      const {
+        payload: {
+          label,
+          bid,
+          uid,
+          id,
+          target,
+          data,
+          nick,
+          type,
+          parent,
+          timestamp,
+          tags,
+        },
+      } = action;
+
+      return Object.assign({}, state, {
+        ...state,
+        ids: {
+          ...state.ids,
+          [bid]: [...(state.ids[bid] || []), id],
+        },
+        entities: {
+          ...state.entities,
+          [label]: Object.assign({}, messageState, {
+            bid,
+            uid,
+            id,
+            target,
+            parent,
+            data,
+            nick,
+            type,
+            timestamp,
+            tags,
+          }),
+        },
+      });
+    }
+
     default:
       return state;
   }

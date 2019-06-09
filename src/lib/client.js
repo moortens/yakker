@@ -388,6 +388,7 @@ export default class Client extends Connection {
     const timestamp = Date.parse(tags['server-time']) || new Date();
     const id = tags['draft/msgid'] || uuid();
     const parent = tags['+draft/reply'] || null;
+    const label = tags['draft/label'] || null;
 
     // simply ignore server messages per now
     if (fromServer) {
@@ -448,7 +449,24 @@ export default class Client extends Connection {
         },
       });
     }
-
+    if (label) {
+      this.dispatch({
+        type: 'MESSAGE_UPDATE',
+        payload: {
+          label,
+          uid,
+          bid,
+          id,
+          target,
+          data,
+          type,
+          nick,
+          parent,
+          timestamp,
+        },
+      });
+      return;
+    }
     this.dispatch({
       type: 'MESSAGE_ADD',
       payload: {
@@ -591,7 +609,7 @@ export default class Client extends Connection {
   };
 
   parse({ bid, data, tid = null }) {
-    const { name: target } = this.buffers[bid];
+    const { name } = this.buffers[bid];
 
     const re = /\/([^\s|$]+)(?:\s([^$]+))?/;
 
@@ -604,18 +622,51 @@ export default class Client extends Connection {
         return;
       }
 
-      Reflect.apply(fn, undefined, [this, target, trailing]);
+      Reflect.apply(fn, undefined, [this, name, trailing]);
 
       return;
     }
 
-    const message = new this.socket.Message('PRIVMSG', target, data);
+    this.privmsg({ bid, data, tid });
+  }
+
+  privmsg({ bid, data, tid = null }) {
+    const { network: { cap } } = this.socket;
+    const { name } = this.buffers[bid];
+    const uid = this.uids[this.nickname.toLowerCase()]
+    const id = uuid();
+    const parent = tid;
+    const type = 'PRIVMSG';
+    const nick = this.nickname;
+    const timestamp = new Date();
+    const target = name;
+
+    const message = new this.socket.Message('PRIVMSG', name, data);
+
+    if (cap.isEnabled('draft/labeled-response')) {
+      message.tags['draft/label'] = id;
+    }
 
     if (tid !== null) {
       message.tags['+draft/reply'] = tid;
     }
 
     this.socket.raw(message);
+
+    this.dispatch({
+      type: 'MESSAGE_ADD',
+      payload: {
+        uid,
+        bid,
+        id,
+        target,
+        data,
+        type,
+        nick,
+        parent,
+        timestamp,
+      },
+    });
   }
 
   sendTypingNotification({ bid }) {
