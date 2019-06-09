@@ -528,7 +528,6 @@ export default class Client extends Connection {
       tags,
       time: timestamp = new Date(),
     } = e;
-    console.log(e);
 
     const id = tags['draft/msgid'] || uuid();
     const typing = tags['+draft/typing'];

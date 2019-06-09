@@ -3,8 +3,6 @@ import { throttle } from 'lodash';
 import store from '../../lib/store';
 
 export default () => {
-
-
   const sendTypingNotification = throttle(
     bid => {
       store.dispatch({
