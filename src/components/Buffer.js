@@ -12,6 +12,7 @@ import Userlist from './Userlist';
 import Thread from './Thread';
 
 import './Buffer.css';
+import TypingIndicator from './TypingIndicator';
 
 const Buffer = ({ location: { state: { bid = null } = {} } }) => {
   const buffer = useSelector(state => state.buffer.entities[bid]);
@@ -69,6 +70,7 @@ const Buffer = ({ location: { state: { bid = null } = {} } }) => {
             <div className="buffer-input">
               <MessageInput editor="main" bid={bid} />
             </div>
+            <TypingIndicator bid={bid} />
           </Container>
           <Route
             render={() => <Userlist bid={bid} />}

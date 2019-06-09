@@ -35,6 +35,8 @@ export default class Client extends Connection {
     this.getState = getState;
     this.dispatch = dispatch;
 
+    this.typings = {};
+
     this.registerEventHandler('connected', this.onConnectedEvent);
     this.registerEventHandler('join', this.onJoinEvent);
     this.registerEventHandler('message', this.onMessageEvent);
@@ -391,9 +393,11 @@ export default class Client extends Connection {
     if (fromServer) {
       return;
     }
+
     console.log(e);
 
     let bid = this.getBufferIdFromTarget(e);
+
     let { target } = e;
 
     if (this.nickname === target) {
@@ -429,6 +433,21 @@ export default class Client extends Connection {
 
     // check if nick has an uid, if not, create one and add to userlist
     const uid = this.addUser(nick, ident, hostname);
+
+    if (
+      this.typings[bid] !== undefined &&
+      this.typings[bid][uid] !== undefined
+    ) {
+      clearTimeout(this.typings[bid][uid]);
+
+      this.dispatch({
+        type: 'TYPING_DELETE_USER',
+        payload: {
+          uid,
+          bid,
+        },
+      });
+    }
 
     this.dispatch({
       type: 'MESSAGE_ADD',
@@ -501,14 +520,68 @@ export default class Client extends Connection {
   };
 
   onTagmsgEvent = e => {
-    const { nick, ident, hostname, target, tags, time: timestamp } = e;
+    const {
+      nick,
+      ident,
+      hostname,
+      target,
+      tags,
+      time: timestamp = new Date(),
+    } = e;
 
     const id = tags['draft/msgid'] || uuid();
+    const typing = tags['+draft/typing'];
 
     const uid = this.addUser(nick, ident, hostname);
     const bid = this.bids[target.toLowerCase()];
 
     if (!bid) {
+      return;
+    }
+
+    if (typing) {
+      if (
+        this.typings[bid] !== undefined &&
+        this.typings[bid][uid] !== undefined
+      ) {
+        clearTimeout(this.typings[bid][uid]);
+      }
+
+      if (typing === 'active' || typing === 'paused') {
+        this.dispatch({
+          type: 'TYPING_ADD_USER',
+          payload: {
+            uid,
+            bid,
+            timestamp,
+          },
+        });
+
+        this.typings[bid] = {
+          ...(this.typings[bid] || {}),
+          [uid]: setTimeout(
+            () => {
+              this.dispatch({
+                type: 'TYPING_DELETE_USER',
+                payload: {
+                  uid,
+                  bid,
+                },
+              });
+            },
+            typing === 'paused' ? 30000 : 6000,
+          ),
+        };
+      } else if (typing === 'done') {
+        this.dispatch({
+          type: 'TYPING_DELETE_USER',
+          payload: {
+            uid,
+            bid,
+          },
+        });
+      }
+
       return;
     }
 
@@ -541,6 +614,15 @@ export default class Client extends Connection {
     if (tid !== null) {
       message.tags['+draft/reply'] = tid;
     }
+
+    this.socket.raw(message);
+  }
+
+  sendTypingNotification({ bid }) {
+    const { name: target } = this.buffers[bid];
+
+    const message = new this.socket.Message('TAGMSG', target);
+    message.tags['+draft/typing'] = 'active';
 
     this.socket.raw(message);
   }
