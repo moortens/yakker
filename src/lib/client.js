@@ -528,6 +528,7 @@ export default class Client extends Connection {
       tags,
       time: timestamp = new Date(),
     } = e;
+    console.log(e);
 
     const id = tags['draft/msgid'] || uuid();
     const typing = tags['+draft/typing'];
@@ -614,6 +615,15 @@ export default class Client extends Connection {
     if (tid !== null) {
       message.tags['+draft/reply'] = tid;
     }
+
+    this.socket.raw(message);
+  }
+
+  sendTypingNotification({ bid }) {
+    const { name: target } = this.buffers[bid];
+
+    const message = new this.socket.Message('TAGMSG', target);
+    message.tags['+draft/typing'] = 'active';
 
     this.socket.raw(message);
   }

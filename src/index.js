@@ -1,44 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import App from './components/App';
+
 import * as serviceWorker from './serviceWorker';
-import createWebSocketConnectionMiddleware from './middleware/websocket';
-import reducers from './reducers';
-import { saveCachedState, loadCachedState } from './lib/storage';
 import history from './lib/history';
+import store from './lib/store';
+import App from './components/App';
 
-const configureStore = () => {
-  // eslint-disable-next-line no-underscore-dangle
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-  const preloadedCache = loadCachedState();
-
-  const store = createStore(
-    reducers,
-    preloadedCache,
-    composeEnhancers(applyMiddleware(createWebSocketConnectionMiddleware())),
-  );
-
-  store.dispatch({ type: '@@INIT_STORE' });
-
-  store.subscribe(() => {
-    // do some memoization
-    const { cache, settings } = store.getState();
-
-    saveCachedState({
-      cache,
-      settings,
-    });
-  });
-
-  return store;
-};
-
-const store = configureStore();
+import './index.css';
 
 ReactDOM.render(
   <Provider store={store}>

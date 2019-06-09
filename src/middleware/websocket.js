@@ -33,6 +33,11 @@ export default () => {
           break;
         }
 
+        case 'WS::TYPING': {
+          client.sendTypingNotification(payload);
+          return;
+        }
+
         case 'WS::JOIN': {
           client.join(payload.channel);
 

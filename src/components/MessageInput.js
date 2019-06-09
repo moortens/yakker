@@ -10,8 +10,12 @@ import Container from './Container';
 import EmojiPicker from './EmojiPicker';
 import AliasPicker from './AliasPicker';
 
+import TypingMiddleware from './input/TypingMiddleware';
+
 import './MessageInput.css';
 import ColorPicker from './ColorPicker';
+
+const plugins = [TypingMiddleware()];
 
 const sendMessageToBuffer = (bid, tid, data) => ({
   type: 'WS::SEND',
@@ -366,6 +370,7 @@ class MessageInput extends React.Component {
   };
 
   render() {
+    const { bid } = this.props;
     const { colorPicker, aliasPicker, aliasFilter, value } = this.state;
 
     return (
@@ -386,8 +391,10 @@ class MessageInput extends React.Component {
               renderInline={this.renderInline}
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
+              plugins={plugins}
               className="message-input-editor"
               placeholder="Type a message..."
+              bid={bid}
             />
             <EmojiPicker
               onSelect={this.insertEmoji}
