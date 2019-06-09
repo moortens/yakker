@@ -67,10 +67,10 @@ const Buffer = ({ location: { state: { bid = null } = {} } }) => {
             }}
           >
             <MessageList bid={bid} />
-            <TypingIndicator bid={bid} />
             <div className="buffer-input">
               <MessageInput editor="main" bid={bid} />
             </div>
+            <TypingIndicator bid={bid} />
           </Container>
           <Route
             render={() => <Userlist bid={bid} />}

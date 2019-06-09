@@ -393,9 +393,11 @@ export default class Client extends Connection {
     if (fromServer) {
       return;
     }
+
     console.log(e);
 
     let bid = this.getBufferIdFromTarget(e);
+
     let { target } = e;
 
     if (this.nickname === target) {
@@ -431,6 +433,21 @@ export default class Client extends Connection {
 
     // check if nick has an uid, if not, create one and add to userlist
     const uid = this.addUser(nick, ident, hostname);
+
+    if (
+      this.typings[bid] !== undefined &&
+      this.typings[bid][uid] !== undefined
+    ) {
+      clearTimeout(this.typings[bid][uid]);
+
+      this.dispatch({
+        type: 'TYPING_DELETE_USER',
+        payload: {
+          uid,
+          bid,
+        },
+      });
+    }
 
     this.dispatch({
       type: 'MESSAGE_ADD',
@@ -523,8 +540,11 @@ export default class Client extends Connection {
     }
 
     if (typing) {
-      if (this.typings[uid]) {
-        clearTimeout(this.typings[uid]);
+      if (
+        this.typings[bid] !== undefined &&
+        this.typings[bid][uid] !== undefined
+      ) {
+        clearTimeout(this.typings[bid][uid]);
       }
 
       if (typing === 'active' || typing === 'paused') {
@@ -537,18 +557,21 @@ export default class Client extends Connection {
           },
         });
 
-        this.typings[uid] = setTimeout(
-          () => {
-            this.dispatch({
-              type: 'TYPING_DELETE_USER',
-              payload: {
-                uid,
-                bid,
-              },
-            });
-          },
-          typing === 'paused' ? 30000 : 6000,
-        );
+        this.typings[bid] = {
+          ...(this.typings[bid] || {}),
+          [uid]: setTimeout(
+            () => {
+              this.dispatch({
+                type: 'TYPING_DELETE_USER',
+                payload: {
+                  uid,
+                  bid,
+                },
+              });
+            },
+            typing === 'paused' ? 30000 : 6000,
+          ),
+        };
       } else if (typing === 'done') {
         this.dispatch({
           type: 'TYPING_DELETE_USER',

@@ -24,7 +24,10 @@ export default (state = {}, { type, payload }) => {
         return state;
       }
 
-      return state[bid].filter(typing => typing.uid !== uid);
+      return Object.assign({}, state, {
+        ...state,
+        [bid]: state[bid].filter(typing => typing.uid !== uid),
+      });
     }
 
     default: {

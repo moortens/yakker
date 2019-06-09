@@ -1,9 +1,36 @@
 .typing-container {
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 2px;
-  
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.typing-text {
   font-family: 'Roboto', sans-serif;
   font-size: 10px;
-  width: 100%;
+  color: #666;
+}
+
+.typing-animation::before {
+  content: '...';
+}
+
+.typing-animation {
+  letter-spacing: normal;
+  animation-duration: 1s;
+  animation-name: expand;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes expand {
+  from {
+    letter-spacing: normal;
+  }
+
+  to {
+    letter-spacing: 2px;
+  }
 }
