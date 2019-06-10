@@ -450,6 +450,7 @@ export default class Client extends Connection {
       });
     }
     if (label) {
+      const status = 'delivered';
       this.dispatch({
         type: 'MESSAGE_UPDATE',
         payload: {
@@ -463,6 +464,7 @@ export default class Client extends Connection {
           nick,
           parent,
           timestamp,
+          status,
         },
       });
       return;
@@ -640,6 +642,7 @@ export default class Client extends Connection {
     const nick = this.nickname;
     const timestamp = new Date();
     const target = name;
+    const status = 'sent';
 
     const message = new this.socket.Message('PRIVMSG', name, data);
 
@@ -665,6 +668,7 @@ export default class Client extends Connection {
         nick,
         parent,
         timestamp,
+        status,
       },
     });
   }
