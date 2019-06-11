@@ -4,37 +4,30 @@ const initialState = {
 };
 
 const messageState = {
-  id: null,
-  parent: null,
-  uid: null,
-
   bid: null,
+  uid: null,
+  id: null,
+  target: null,
   data: null,
-  type: null, // notice, action, privmsg, tagmsg, join, part
   nick: null,
-  tags: [],
+  type: null,
+  parent: null,
   timestamp: null,
+  tags: [],
+  status: 'received',
 };
 
 const MESSAGE_ADD = 'MESSAGE_ADD';
+const MESSAGE_UPDATE = 'MESSAGE_UPDATE';
 
 export default (state = initialState, action) => {
+  const { payload } = action;
+
   switch (action.type) {
     case MESSAGE_ADD: {
-      const {
-        payload: {
-          bid,
-          uid,
-          id,
-          target,
-          data,
-          nick,
-          type,
-          parent,
-          timestamp,
-          tags,
-        },
-      } = action;
+      const { bid, id } = payload;
+
+      if (!bid || !id) return state;
 
       return Object.assign({}, state, {
         ...state,
@@ -45,16 +38,28 @@ export default (state = initialState, action) => {
         entities: {
           ...state.entities,
           [id]: Object.assign({}, messageState, {
-            bid,
-            uid,
-            id,
-            target,
-            parent,
-            data,
-            nick,
-            type,
-            timestamp,
-            tags,
+            ...payload,
+          }),
+        },
+      });
+    }
+
+    case MESSAGE_UPDATE: {
+      const { label, bid, id } = payload;
+
+      return Object.assign({}, state, {
+        ...state,
+        ids: {
+          ...state.ids,
+          [bid]: [...(state.ids[bid].filter(key => key !== label) || []), id],
+        },
+        entities: {
+          ...Object.fromEntries(
+            Object.entries(state.entities).filter(([key]) => key !== label) ||
+              [],
+          ),
+          [id]: Object.assign({}, messageState, {
+            ...payload,
           }),
         },
       });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
+import classnames from 'classnames';
 import TextFormatter from '../TextFormatter';
 import Container from '../Container';
 import Avatar from '../Avatar';
@@ -8,8 +9,12 @@ import { Reply, Smile } from '../Icons';
 import './Privmsg.css';
 
 const Privmsg = ({ message, continouous, match, bid, tid, thread, ...props }) => {
+  const klass = classnames({
+    'privmsg-sent': message.status === 'sent',
+  });
+
   return (
-    <Container direction="row">
+    <Container direction="row" className={klass}>
       <div className="privmsg-gutter">
         {!continouous && <Avatar text={message.nick} />}
       </div>

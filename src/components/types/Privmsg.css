@@ -1,4 +1,3 @@
-
 .privmsg-time {
   padding-left: 5px;
   color: #aaa;
@@ -117,4 +116,8 @@
   border-radius: 5px;
   
   
+}
+
+.privmsg-sent {
+  opacity: 0.6;
 }
