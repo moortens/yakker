@@ -42,3 +42,8 @@ export const setSettingsEmbedUntrustedImages = payload => ({
   type: 'SETTINGS_EMBED_UNTRUSTED_IMAGES',
   payload,
 });
+
+export const setSettingsShareTypingStatus = payload => ({
+  type: 'SETTINGS_SHARE_TYPING_STATUS',
+  payload,
+});

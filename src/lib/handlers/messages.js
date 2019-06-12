@@ -35,7 +35,7 @@ export default ({ client, dispatch }) => {
       uid = addUser(nick, ident, hostname);
     }
 
-    const bid = getBufferIdFromTarget(target);
+    const bid = getBufferIdFromTarget(event);
 
     if (!bid) {
       return;
@@ -45,7 +45,7 @@ export default ({ client, dispatch }) => {
       clearTypingState(bid, uid);
 
       if (typing === 'active' || typing === 'paused') {
-        setTypingState(uid, bid, typing === 'paused' ? 30000 : 6000);
+        setTypingState(bid, uid, typing === 'paused' ? 30000 : 6000);
       }
 
       return;

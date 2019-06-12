@@ -16,6 +16,7 @@ import {
   setSettingsNotifyMentions,
   setSettingsNotifyPrivateMessages,
   setSettingsEmbedUntrustedImages,
+  setSettingsShareTypingStatus,
 } from '../actions/settings';
 
 import './Settings.css';
@@ -35,6 +36,7 @@ const Settings = () => {
     displayUnreadInSidebar,
     displayUnreadIndicator,
     embedUntrustedImages,
+    shareTypingStatus,
   } = useSelector(state => state.settings);
 
   useEffect(() => {
@@ -123,6 +125,16 @@ const Settings = () => {
           }
         />
         Embed images in chat
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          checked={shareTypingStatus}
+          onChange={({ target: { checked } }) =>
+            dispatch(setSettingsShareTypingStatus(checked))
+          }
+        />
+        Share typing status
       </label>
 
       <div className="settings-account">Notifications</div>

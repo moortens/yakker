@@ -124,7 +124,7 @@ export default class Client extends Connection {
 
     if (e.type !== undefined) {
       const { nick, type } = e;
-      const mayHaveSelfTarget = ['action', 'privmsg', 'notice'];
+      const mayHaveSelfTarget = ['action', 'privmsg', 'notice', 'tagmsg'];
 
       if (mayHaveSelfTarget.includes(type.toLowerCase())) {
         if (this.nickname === target) {
@@ -222,12 +222,14 @@ export default class Client extends Connection {
     const nick = this.nickname;
     const timestamp = new Date();
     const target = name;
-    const status = 'sent';
+    let status = 'sent';
 
     const message = new this.socket.Message('PRIVMSG', name, data);
 
     if (cap.isEnabled('draft/labeled-response')) {
       message.tags['draft/label'] = id;
+    } else {
+      status = 'delivered';
     }
 
     if (tid !== null) {

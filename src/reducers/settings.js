@@ -15,6 +15,8 @@ const defaultState = {
 
   embedUntrustedImages: false,
 
+  shareTypingStatus: true,
+
   networks: [],
 };
 
@@ -85,6 +87,13 @@ export default (state = initialState, { type, payload }) => {
       return Object.assign({}, state, {
         ...state,
         embedUntrustedImages: payload,
+      });
+    }
+
+    case 'SETTINGS_SHARE_TYPING_STATUS': {
+      return Object.assign({}, state, {
+        ...state,
+        shareTypingStatus: payload,
       });
     }
 
