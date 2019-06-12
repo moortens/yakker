@@ -258,6 +258,10 @@ export default class Client extends Connection {
   sendTypingNotification({ bid }) {
     const { name: target } = this.buffers[bid];
 
+    if (!this.shouldShareTypingStatus()) {
+      return;
+    }
+
     const message = new this.socket.Message('TAGMSG', target);
     message.tags['+draft/typing'] = 'active';
 
@@ -322,6 +326,8 @@ export default class Client extends Connection {
   shouldNotifyOnMentions = () => this.settings.notifyMentions;
 
   shouldNotifyOnAllMessages = () => this.settings.notifyAllMessages;
+
+  shouldShareTypingStatus = () => this.settings.shareTypingStatus;
 
   spawnNativeNotification = ({ title, body, url, bid }) => {
     if (Notification.permission === 'granted') {
