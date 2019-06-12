@@ -31,6 +31,10 @@ export default () => {
       }
 
       // this is a slash command.
+      if (startBlock === null || startBlock === undefined) {
+        return next();
+      }
+
       if (re.test(startBlock.text)) return next();
 
       /* Gets the size of all desendants of the document. This will give
