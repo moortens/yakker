@@ -4,7 +4,7 @@ import {
   setChanlistLoading,
 } from '../../actions/chanlist';
 
-export default ({ client, dispatch }) => {
+export default ({ dispatch }) => {
   const onListStartEvent = () => {
     dispatch(clearChanlist());
     dispatch(setChanlistLoading(true));

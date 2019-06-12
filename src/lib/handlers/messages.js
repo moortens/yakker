@@ -1,16 +1,20 @@
 import uuid from 'uuid/v4';
+import { escapeRegExp } from 'lodash';
 
 import { addBuffer } from '../../actions/buffer';
 import addMessage from '../../actions/message';
-import history from '../history';
 
 export default ({ client, dispatch }) => {
   const {
     addUser,
     setTypingState,
     clearTypingState,
-    getBidByName,
+    getBufferIdFromTarget,
     getUidByNick,
+    shouldNotifyOnPrivateMessage,
+    shouldNotifyOnAllMessages,
+    shouldNotifyOnMentions,
+    spawnNativeNotification,
   } = client;
 
   const onTagmsgEvent = event => {
@@ -31,7 +35,7 @@ export default ({ client, dispatch }) => {
       uid = addUser(nick, ident, hostname);
     }
 
-    const bid = getBidByName(target);
+    const bid = getBufferIdFromTarget(target);
 
     if (!bid) {
       return;
@@ -63,18 +67,17 @@ export default ({ client, dispatch }) => {
       from_server: fromServer,
     } = e;
 
-    const timestamp = Date.parse(tags['server-time']) || new Date();
-    const id = tags['draft/msgid'] || uuid();
-    const parent = tags['+draft/reply'] || null;
-    const label = tags['draft/label'] || null;
-
     // simply ignore server messages per now
     if (fromServer) {
       return;
     }
 
-    let bid = client.getBufferIdFromTarget(e);
+    const timestamp = Date.parse(tags['server-time']) || new Date();
+    const id = tags['draft/msgid'] || uuid();
+    const parent = tags['+draft/reply'] || null;
+    const label = tags['draft/label'] || null;
 
+    let bid = getBufferIdFromTarget(e);
     let { target } = e;
 
     if (client.nickname === target) {
@@ -86,58 +89,53 @@ export default ({ client, dispatch }) => {
         dispatch(addBuffer(bid, target));
       }
 
-      if (client.settings.notifyPrivateMessages) {
-        if (Notification.permission === 'granted') {
-          const notification = new Notification(
-            `Private message from ${nick}`,
-            {
-              body: data,
-            },
-          );
+      if (shouldNotifyOnPrivateMessage()) {
+        spawnNativeNotification({
+          title: `Private message from ${nick}`,
+          body: data,
+          bid,
+          url: `/message/${nick.toLowerCase()}`,
+        });
+      }
+    } else {
+      if (bid === null) {
+        bid = uuid();
+      }
 
-          notification.addEventListener('click', e => {
-            history.push(`/message/${nick.toLowerCase()}`, {
-              bid,
-            });
-          });
-        }
+      const re = new RegExp(
+        `(?:\\s|^|@)${escapeRegExp(client.nickname)}(?::|\\s|$)`,
+        'iu',
+      );
+
+      if (shouldNotifyOnMentions() && re.test(data)) {
+        spawnNativeNotification({
+          title: `You were mentioned by ${nick}`,
+          body: data,
+          bid,
+          url: `/channel/${target.toLowerCase()}`,
+        });
+      } else if (shouldNotifyOnAllMessages()) {
+        spawnNativeNotification({
+          title: `New message in ${target.toLowerCase()}`,
+          body: data,
+          bid,
+          url: `/channel/${target.toLowerCase()}`,
+        });
       }
     }
 
-    if (bid === null) {
-      bid = uuid();
-    }
-
     // check if nick has an uid, if not, create one and add to userlist
-    const uid = client.addUser(nick, ident, hostname);
+    let uid = getUidByNick(nick);
+    if (uid === undefined) {
+      uid = addUser(nick, ident, hostname);
+    }
 
     clearTypingState(bid, uid);
 
-    if (label) {
-      const status = 'delivered';
-      
-      dispatch({
-        type: 'MESSAGE_UPDATE',
-        payload: {
-          label,
-          uid,
-          bid,
-          id,
-          target,
-          data,
-          type,
-          nick,
-          parent,
-          timestamp,
-          status,
-        },
-      });
-      return;
-    }
-    
-    dispatch({
+    let action = {
       type: 'MESSAGE_ADD',
       payload: {
+        label,
         uid,
         bid,
         id,
@@ -147,8 +145,22 @@ export default ({ client, dispatch }) => {
         nick,
         parent,
         timestamp,
+        status: 'recieved',
       },
-    });
+    };
+
+    if (label && nick === client.nickname) {
+      action = Object.assign({}, action, {
+        ...action,
+        type: 'MESSAGE_UPDATE',
+        payload: {
+          ...action.payload,
+          status: 'delivered',
+        },
+      });
+    }
+
+    dispatch(action);
   };
 
   return {

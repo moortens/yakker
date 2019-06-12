@@ -89,7 +89,7 @@ export default ({ client, dispatch }) => {
   };
 
   const onAwayEvent = e => {
-    const { self, nick, message } = e;
+    const { nick } = e;
 
     const uid = uids[nick.toLowerCase()];
     dispatch(
@@ -101,7 +101,7 @@ export default ({ client, dispatch }) => {
   };
 
   const onBackEvent = e => {
-    const { self, nick, message } = e;
+    const { nick } = e;
 
     const uid = uids[nick.toLowerCase()];
     dispatch(

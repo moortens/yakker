@@ -5,13 +5,6 @@ export default class Connection {
   socket = null;
 
   config = {
-    /*host: '51.68.134.68',
-    port: 7002,*/
-    
-    /*host: '127.0.0.1',
-    port: 8080,*/
-    path: '/webirc/websocket/',
-    
     tls: false,
     nick: null,
     username: null,

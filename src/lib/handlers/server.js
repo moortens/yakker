@@ -1,8 +1,6 @@
 import { setCache } from '../../actions/cache';
 
 export default ({ client, dispatch }) => {
-  const { registerEventHandler } = client;
-
   const onConnectedEvent = ({ nick }) => {
     client.status = 'connected';
     client.nickname = nick.toLowerCase();

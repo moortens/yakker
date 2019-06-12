@@ -1,20 +1,9 @@
 import uuid from 'uuid/v4';
-import {
-  addChannel,
-  setChannelTopic,
-  addChannelMember,
-  removeChannelMember,
-} from '../../actions/channel';
 
-import {
-  setUserlistUser,
-  renameUserlistUser,
-  removeUserlistUser,
-} from '../../actions/userlist';
+import { setChannelTopic, addChannelMember } from '../../actions/channel';
+import { setUserlistUser } from '../../actions/userlist';
 
 export default ({ client, dispatch }) => {
-  const { registerEventHandler } = client;
-  
   const onTopicEvent = e => {
     const { channel, topic } = e;
     const bid = client.bids[channel.toLowerCase()];

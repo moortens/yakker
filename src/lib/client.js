@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4';
 import Connection from './connection';
-
+import history from './history';
 import {
   setServerStatus,
   setServerOptions,
@@ -130,9 +130,9 @@ export default class Client extends Connection {
         if (this.nickname === target) {
           if (e.from_server) {
             // target should be active buffer, or first if no active buffer
-            /*if (this.buffer != null) {
+            /* if (this.buffer != null) {
               return this.buffer;
-            }*/
+            } */
           }
           target = nick;
         }
@@ -313,5 +313,23 @@ export default class Client extends Connection {
 
   isCapabilityEnabled = cap => {
     return this.socket.network.cap.isEnabled(cap);
+  };
+
+  shouldNotifyOnPrivateMessages = () => this.settings.notifyPrivateMessages;
+
+  shouldNotifyOnMentions = () => this.settings.notifyMentions;
+
+  shouldNotifyOnAllMessages = () => this.settings.notifyAllMessages;
+
+  spawnNativeNotification = ({ title, body, url, bid }) => {
+    if (Notification.permission === 'granted') {
+      const notification = new Notification(title, { body });
+
+      notification.addEventListener('click', () => {
+        history.push(url, {
+          bid,
+        });
+      });
+    }
   };
 }
