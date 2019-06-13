@@ -1,15 +1,18 @@
 import React from 'react';
-import Action from './Action';
+import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { bufferThreadMessageSelector } from '../selectors/message';
+
 import { withRouter } from 'react-router-dom';
-import './Thread.css';
+
+import { bufferThreadMessageSelector } from '../selectors/message';
+import { Close } from './Icons';
+import Action from './Action';
 import MessageInput from './MessageInput';
 import Container from './Container';
 import ThreadList from './ThreadList';
-import { Close } from './Icons';
-import { Link } from 'react-router-dom/cjs/react-router-dom';
 import useHotKey from './hooks/useHotKey';
+
+import './Thread.css';
 
 const Thread = ({
   bid,
@@ -18,7 +21,7 @@ const Thread = ({
   },
   history,
 }) => {
-  const { ids, messages } = useSelector(
+  const { messages } = useSelector(
     state => bufferThreadMessageSelector(state, bid, tid),
     [bid, tid],
   );
@@ -28,7 +31,7 @@ const Thread = ({
   });
 
   const getUniqueNickString = () => {
-    const nicks = [...new Set(messages.map(({ nick }) => nick))]
+    const nicks = [...new Set(messages.map(({ nick }) => nick))];
     if (nicks.length === 0) {
       return '';
     }
@@ -86,6 +89,12 @@ const Thread = ({
       </Container>
     </div>
   );
+};
+
+Thread.propTypes = {
+  bid: propTypes.string.isRequired,
+  history: propTypes.shape().isRequired,
+  match: propTypes.shape().isRequired,
 };
 
 export default withRouter(Thread);
