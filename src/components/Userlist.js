@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import propTypes from 'prop-types';
+import classnames from 'classnames';
 
 import { channelsSelector } from '../selectors/userlist';
+import Avatar from './Avatar';
 
 import './Userlist.css';
-import Container from './Container';
-import classnames from 'classnames';
-import Avatar from './Avatar';
 
 const Userlist = ({ bid }) => {
   const [searchInput, setSearchInput] = useState('');

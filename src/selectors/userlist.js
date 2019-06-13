@@ -1,8 +1,4 @@
-import {
-  createSelectorCreator,
-  createStructuredSelector,
-  defaultMemoize,
-} from 'reselect';
+import { createSelectorCreator, defaultMemoize } from 'reselect';
 import isEqual from 'lodash/isEqual';
 
 export const channelsSelector = (state, cid) => {

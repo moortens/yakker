@@ -47,14 +47,10 @@ const userlistReducer = (state = initialState, action) => {
     }
 
     case USERLIST_RENAME_USER: {
-      const { nick, newNick } = payload;
-
       return state;
     }
 
     case USERLIST_REMOVE_USER: {
-      const { nick } = payload;
-
       return state;
     }
 

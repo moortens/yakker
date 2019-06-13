@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Paginate from 'react-paginate';
 import Container from './Container';
 import { Spinner, Users, Search, AngleLeft, AngleRight } from './Icons';
-import Action from './Action';
 
 import './ChanList.css';
 

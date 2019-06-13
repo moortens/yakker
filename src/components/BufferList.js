@@ -1,6 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import Container from './Container';

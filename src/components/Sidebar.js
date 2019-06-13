@@ -2,8 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import BufferList from './BufferList';
-import Container from './Container';
-
 import Status from './Status';
 
 import './Sidebar.css';

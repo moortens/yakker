@@ -9,12 +9,12 @@ import { setUserlistUser } from '../../actions/userlist';
 import addMessage from '../../actions/message';
 
 export default ({ client, dispatch }) => {
-  const { getUidByNick, getBufferIdFromTarget, addUser, uids } = client;
+  const { getUidByNick, getBufferIdFromTarget, addUser } = client;
 
   const onJoinEvent = e => {
-    const { nick, channel: target, ident, hostname, gecos, time } = e;
+    const { nick, channel: target, ident, hostname, time } = e;
     const bid = client.getBufferIdFromTarget(e) || uuid();
-    
+
     const timestamp = new Date(time) || new Date();
     const type = 'join';
 
