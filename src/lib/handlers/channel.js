@@ -3,21 +3,29 @@ import uuid from 'uuid/v4';
 import { setChannelTopic, addChannelMember } from '../../actions/channel';
 import { setUserlistUser } from '../../actions/userlist';
 
-export default ({ client, dispatch }) => {
+export default ({
+  client: { getBufferIdFromTarget, addUser, getUidByNick },
+  dispatch,
+}) => {
   const onTopicEvent = e => {
-    const { channel, topic } = e;
-    const bid = client.bids[channel.toLowerCase()];
+    const { topic } = e;
+    const bid = getBufferIdFromTarget(e);
     dispatch(setChannelTopic(bid, topic));
   };
 
   const onUserlistEvent = e => {
-    const { channel, users } = e;
+    const { users } = e;
 
-    const bid = client.bids[channel.toLowerCase()];
+    const bid = getBufferIdFromTarget(e);
 
     users.forEach(user => {
       const { nick, ident, hostname, modes } = user;
-      const uid = client.addUser(nick, ident, hostname);
+
+      let uid = getUidByNick(nick);
+
+      if (!uid) {
+        uid = addUser(nick, ident, hostname);
+      }
 
       dispatch(addChannelMember(bid, uid, modes));
     });
@@ -36,7 +44,7 @@ export default ({ client, dispatch }) => {
         account = null,
       } = user;
 
-      const uid = client.uids[nick.toLowerCase()] || uuid();
+      const uid = getUidByNick(nick) || uuid();
 
       dispatch(
         setUserlistUser(uid, {
