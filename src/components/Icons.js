@@ -16,7 +16,6 @@ import {
   faAngleLeft,
   faAngleRight,
   faReply,
-  faAsterisk,
   faTimes,
   faEllipsisV,
   faKeyboard,
