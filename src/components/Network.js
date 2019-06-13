@@ -84,7 +84,7 @@ const Network = () => {
                 Advanced...
               </span>
             </Action>
-            <button type="button" onClick={connect}>
+            <button className="network-connect" type="button" onClick={connect}>
               Go
             </button>
           </Container>
