@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Dropdown from 'react-dropdown';
 
 import { setCache } from 'actions/cache';
+import { connectToNetwork } from 'actions/irc';
 
 import Container from './Container';
 import Action from './Action';
@@ -15,9 +16,9 @@ const Network = () => {
   const dispatch = useDispatch();
 
   const connect = () => {
-    const { value = null } = network;
+    const [{ value }] = networks || network;
 
-    if (value === null || nickname === null) {
+    if (nickname === null || value === null) {
       return;
     }
 
@@ -29,10 +30,7 @@ const Network = () => {
       nickname,
     };
 
-    dispatch({
-      type: 'WS::CONNECT',
-      payload,
-    });
+    dispatch(connectToNetwork(host, port, nickname));
     dispatch(setCache(payload));
   };
 
@@ -86,7 +84,7 @@ const Network = () => {
                 Advanced...
               </span>
             </Action>
-            <button type="button" onClick={connect}>
+            <button className="network-connect" type="button" onClick={connect}>
               Go
             </button>
           </Container>

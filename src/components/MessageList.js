@@ -44,7 +44,7 @@ const MessageList = ({ bid, match, history }) => {
     messages
       .filter(item => item.parent === null || !ids.includes(item.parent))
       .map((message, idx) => {
-        const { type, nick, timestamp, id } = message;
+        const { type, nick, timestamp, parent, id } = message;
         const previous = messages[idx - 1];
         const tid = id;
         const thread = messages.filter(
@@ -59,6 +59,7 @@ const MessageList = ({ bid, match, history }) => {
           type.toLowerCase() === 'privmsg' &&
           previous.nick === nick &&
           previous.parent === null &&
+          parent === null &&
           (timestamp - previous.timestamp) / 1000 <= 300;
 
         const Message = types[type.toUpperCase()];
