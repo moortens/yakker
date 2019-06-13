@@ -24,7 +24,11 @@ const ChanList = () => {
 
     return modes.map(mode => {
       if (badges[mode]) {
-        return <span className="chanlist-badge">{badges[mode]}</span>;
+        return (
+          <span key={badges[mode]} className="chanlist-badge">
+            {badges[mode]}
+          </span>
+        );
       }
 
       return null;
@@ -37,6 +41,7 @@ const ChanList = () => {
       .sort((a, b) => b.users - a.users)
       .map(({ channel, topic, users, modes }) => (
         <Container
+          key={channel}
           direction="column"
           className="chanlist-item"
           onClick={() => dispatch({ type: 'WS::JOIN', payload: { channel } })}

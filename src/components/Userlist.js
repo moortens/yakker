@@ -85,7 +85,7 @@ const Userlist = ({ bid }) => {
       const styles = ['userlist-mode', `userlist-mode-${name.toLowerCase()}`];
 
       return (
-        <div className={styles.join(' ')}>
+        <div key={name} className={styles.join(' ')}>
           <header>{name}</header>
           {users.map(user => {
             const { away = false } = user;
@@ -94,7 +94,7 @@ const Userlist = ({ bid }) => {
             });
 
             return (
-              <div className="userlist-item-container">
+              <div key={user.nick} className="userlist-item-container">
                 <Avatar text={user.nick} small />
                 <div className={klasses}>{user.nick}</div>
               </div>
