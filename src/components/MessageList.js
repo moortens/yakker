@@ -2,17 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
-import { bufferMessageSelector } from '../selectors/message';
-import Container from './Container';
+import ScrollBar from 'react-perfect-scrollbar';
 
+import { bufferMessageSelector } from '../selectors/message';
+import { Reply, AngleRight } from './Icons';
+import useHotKey from './hooks/useHotKey';
+import Container from './Container';
 import types from './types';
 
 import './MessageList.css';
-import { Reply, AngleRight } from './Icons';
-import useHotKey from './hooks/useHotKey';
-import ScrollBar from 'react-perfect-scrollbar';
-
-
 
 const MessageList = ({ bid, match, history }) => {
   const { ids, messages } = useSelector(
@@ -53,7 +51,7 @@ const MessageList = ({ bid, match, history }) => {
         // since the replies array contain the parent element, subtract one.
         const amount = thread.length - 1;
 
-        const continouous = 
+        const continouous =
           previous &&
           previous.type.toLowerCase() === type.toLowerCase() &&
           type.toLowerCase() === 'privmsg' &&
@@ -113,6 +111,8 @@ const MessageList = ({ bid, match, history }) => {
 
 MessageList.propTypes = {
   bid: propTypes.string.isRequired,
+  match: propTypes.shape().isRequired,
+  history: propTypes.shape().isRequired,
 };
 
 export default withRouter(MessageList);
