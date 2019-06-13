@@ -5,11 +5,10 @@ import { withRouter, Link } from 'react-router-dom';
 
 import TextFormatter from './TextFormatter';
 import Container from './Container';
-import { Settings, Bars, Ellipsis } from './Icons';
+import { Bars, Ellipsis } from './Icons';
 
 import './Header.css';
 import { selectChannelDetails } from '../selectors/channel';
-
 
 const Header = ({ bid, match }) => {
   const { name, topic, count } = useSelector(
@@ -19,7 +18,10 @@ const Header = ({ bid, match }) => {
 
   return (
     <div className="header-container">
-      <Container direction="row" style={{ alignItems: 'baseline', width: '100%' }}>
+      <Container
+        direction="row"
+        style={{ alignItems: 'baseline', width: '100%' }}
+      >
         <div className="header-name">{name}</div>
         <TextFormatter
           className="header-title"
@@ -53,6 +55,7 @@ const Header = ({ bid, match }) => {
 
 Header.propTypes = {
   bid: propTypes.string,
+  match: propTypes.shape().isRequired,
 };
 
 Header.defaultProps = {

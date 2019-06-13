@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
+import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import ScrollBar from 'react-perfect-scrollbar';
 
 import types from './types';
-
 
 const ThreadList = ({ thread }) => {
   const { embedUntrustedImages } = useSelector(state => state.settings);
@@ -51,6 +51,10 @@ const ThreadList = ({ thread }) => {
       <div ref={scrollElm} />
     </ScrollBar>
   );
+};
+
+ThreadList.propTypes = {
+  thread: propTypes.arrayOf(propTypes.object).isRequired,
 };
 
 export default withRouter(ThreadList);
