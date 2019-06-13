@@ -7,3 +7,13 @@
   line-height: 38px;
   text-align: left;
 }
+
+.status-container a {
+  text-decoration: none;
+  color: white;
+  padding-right: 5px;
+}
+
+.status-container a:visited {
+  color: white;
+}

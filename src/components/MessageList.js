@@ -41,13 +41,20 @@ const MessageList = ({ bid, match, history }) => {
   const showCollapsedList = () =>
     messages
       .filter(item => item.parent === null || !ids.includes(item.parent))
+      .sort(
+        ({ timestamp: timestampA }, { timestamp: timestampB }) =>
+          timestampA - timestampB,
+      )
       .map((message, idx) => {
         const { type, nick, timestamp, parent, id } = message;
         const previous = messages[idx - 1];
         const tid = id;
-        const thread = messages.filter(
-          item => item.id === id || item.parent === id,
-        );
+        const thread = messages
+          .filter(item => item.id === id || item.parent === id)
+          .sort(
+            ({ timestamp: timestampA }, { timestamp: timestampB }) =>
+              timestampA - timestampB,
+          );
         // since the replies array contain the parent element, subtract one.
         const amount = thread.length - 1;
 

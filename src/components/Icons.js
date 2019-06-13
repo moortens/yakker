@@ -19,6 +19,7 @@ import {
   faAsterisk,
   faTimes,
   faEllipsisV,
+  faKeyboard,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -39,3 +40,4 @@ export const AngleRight = () => <FontAwesomeIcon icon={faAngleRight} />;
 export const Reply = () => <FontAwesomeIcon icon={faReply} />;
 export const Close = () => <FontAwesomeIcon icon={faTimes} />;
 export const Ellipsis = () => <FontAwesomeIcon icon={faEllipsisV} />;
+export const Keyboard = () => <FontAwesomeIcon icon={faKeyboard} />;
