@@ -1,7 +1,7 @@
 export default (state = {}, { type, payload }) => {
   switch (type) {
     case 'TYPING_ADD_USER': {
-      const { bid, uid, timestamp } = payload;
+      const { bid, uid } = payload;
 
       return Object.assign({}, state, {
         ...state,
@@ -11,7 +11,6 @@ export default (state = {}, { type, payload }) => {
             : []),
           {
             uid,
-            timestamp,
           },
         ],
       });
