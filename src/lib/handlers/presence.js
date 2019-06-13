@@ -9,11 +9,14 @@ import { setUserlistUser } from '../../actions/userlist';
 import addMessage from '../../actions/message';
 
 export default ({ client, dispatch }) => {
-  const { bids, uids } = client;
+  const { getUidByNick, getBufferIdFromTarget, addUser, uids } = client;
 
   const onJoinEvent = e => {
-    const { nick, channel: target, ident, hostname, gecos } = e;
-    const bid = bids[target.toLowerCase()] || uuid();
+    const { nick, channel: target, ident, hostname, gecos, time } = e;
+    const bid = client.getBufferIdFromTarget(e) || uuid();
+    
+    const timestamp = new Date(time) || new Date();
+    const type = 'join';
 
     if (nick.toLowerCase() === client.nickname) {
       client.socket.who(target);
@@ -26,7 +29,10 @@ export default ({ client, dispatch }) => {
     }
 
     const id = uuid();
-    const uid = client.addUser(nick, ident, hostname, gecos);
+    let uid = getUidByNick(nick);
+    if (uid === undefined) {
+      uid = addUser(nick, ident, hostname);
+    }
 
     dispatch(
       addMessage({
@@ -34,22 +40,30 @@ export default ({ client, dispatch }) => {
         uid,
         bid,
         target,
-        type: 'JOIN',
+        type,
         nick,
+        timestamp,
       }),
     );
     dispatch(addChannelMember(bid, uid, []));
   };
 
   const onPartEvent = e => {
-    const { nick, channel: target, message, time: timestamp } = e;
+    const { nick, channel: target, message: data, time } = e;
 
     const type = 'part';
-    const id = uuid();
-    const bid = bids[target.toLowerCase()];
-    const uid = uids[nick.toLowerCase()];
 
-    this.dispatch(
+    const id = uuid();
+    const bid = getBufferIdFromTarget(e);
+    const uid = getUidByNick(nick);
+
+    if (!uid || !bid) {
+      return;
+    }
+
+    const timestamp = new Date(time) || new Date();
+
+    dispatch(
       addMessage({
         id,
         uid,
@@ -57,7 +71,7 @@ export default ({ client, dispatch }) => {
         target,
         type,
         nick,
-        message,
+        data,
         timestamp,
       }),
     );
@@ -65,21 +79,28 @@ export default ({ client, dispatch }) => {
   };
 
   const onQuitEvent = e => {
-    const { nick, message: data, time: timestamp } = e;
+    const { nick, message: data, time } = e;
+
+    const type = 'quit';
 
     const id = uuid();
+    const uid = getUidByNick(nick);
 
-    const uid = uids[nick.toLowerCase()];
+    if (!uid) {
+      return;
+    }
+
     const buffers = client.getCommonBuffers(uid);
+    const timestamp = new Date(time) || new Date();
 
     buffers.forEach(bid => {
-      this.dispatch(
+      dispatch(
         addMessage({
           id,
           uid,
           bid,
           data,
-          type: 'QUIT',
+          type,
           nick,
           timestamp,
         }),
@@ -91,7 +112,7 @@ export default ({ client, dispatch }) => {
   const onAwayEvent = e => {
     const { nick } = e;
 
-    const uid = uids[nick.toLowerCase()];
+    const uid = getUidByNick(nick);
     dispatch(
       setUserlistUser(uid, {
         nick,
@@ -103,7 +124,7 @@ export default ({ client, dispatch }) => {
   const onBackEvent = e => {
     const { nick } = e;
 
-    const uid = uids[nick.toLowerCase()];
+    const uid = getUidByNick(nick);
     dispatch(
       setUserlistUser(uid, {
         nick,
