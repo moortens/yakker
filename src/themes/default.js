@@ -7,8 +7,14 @@ const defaultTheme = {
       secondary: '#999999',
     },
 
+    monospace: {
+      foreground: '#333333',
+      background: '#ececec',
+      border: '#cccccc',
+    },
+
     typing: '#999999',
-    
+
     secondary: '#ffffff',
     sidebar: '#031D44',
     heading: '#4A4E69',

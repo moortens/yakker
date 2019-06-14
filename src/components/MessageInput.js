@@ -6,14 +6,15 @@ import { Emoji } from 'emoji-mart';
 import { connect } from 'react-redux';
 import isKeyHotkey from 'is-hotkey';
 
-import Container from './Container';
+import styled from 'styled-components';
+
 import EmojiPicker from './EmojiPicker';
 import AliasPicker from './AliasPicker';
 
 import TypingMiddleware from './input/TypingMiddleware';
 
-import './MessageInput.css';
 import ColorPicker from './ColorPicker';
+import { HorizontalBox } from './Box';
 
 const plugins = [TypingMiddleware()];
 
@@ -33,6 +34,72 @@ const isMonospaceHotkey = isKeyHotkey('mod+m');
 const isEnterHotkey = isKeyHotkey('enter');
 const isTabHotkey = isKeyHotkey('tab');
 const isCtrlKHotKey = isKeyHotkey('ctrl+k');
+
+const EditorBox = styled(HorizontalBox)`
+  & .message-input-editor {
+    background-color: #fff;
+    vertical-align: top;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.6rem;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: calc(100% - 30px);
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    padding: 15px;
+  }
+
+  & .message-input-emojipicker,
+  & .message-input-emojipicker:active {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    padding: 15px;
+    height: 100%;
+    outline: none;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    background-color: #fff;
+    cursor: inherit;
+    text-align: left;
+    color: #ccc;
+  }
+
+  & .message-input-emojipicker:hover {
+    color: #333;
+  }
+`;
+
+const Paragraph = styled.p`
+  font-size: inherit;
+  font-family: inherit;
+`;
+
+const Monospace = styled.span`
+  background-color: ${({ theme }) => theme.colors.monospace.background};
+  padding: 5px;
+  border: 1px solid ${({ theme }) => theme.colors.monospace.border};
+  border-radius: 5px;
+  font-family: monospace;
+  color: ${({ theme }) => theme.colors.monospace.foreground};
+`;
+
+const Underline = styled.span`
+  text-decoration: underline;
+`;
+
+const Bold = styled.span`
+  font-weight: bold;
+`;
+
+const Italic = styled.span`
+  font-style: italic;
+`;
 
 const serializeMarks = ({ type, data }) => {
   switch (type) {
@@ -166,7 +233,7 @@ class MessageInput extends React.Component {
 
     switch (node.type) {
       case 'paragraph': {
-        return <p {...attributes}>{children}</p>;
+        return <Paragraph {...attributes}>{children}</Paragraph>;
       }
 
       default: {
@@ -204,23 +271,19 @@ class MessageInput extends React.Component {
 
     switch (type) {
       case 'bold': {
-        return <strong {...attributes}>{children}</strong>;
+        return <Bold {...attributes}>{children}</Bold>;
       }
 
       case 'italic': {
-        return <em {...attributes}>{children}</em>;
+        return <Italic {...attributes}>{children}</Italic>;
       }
 
       case 'underline': {
-        return <u {...attributes}>{children}</u>;
+        return <Underline {...attributes}>{children}</Underline>;
       }
 
       case 'monospace': {
-        return (
-          <span className="message-input-monospace" {...attributes}>
-            {children}
-          </span>
-        );
+        return <Monospace {...attributes}>{children}</Monospace>;
       }
 
       case 'color': {
@@ -300,12 +363,14 @@ class MessageInput extends React.Component {
     } else if (isMonospaceHotkey(e)) {
       mark = 'monospace';
     } else if (isEnterHotkey(e)) {
+      const { colorPicker } = this.state;
       const {
         value: { document },
       } = editor;
 
-      if (this.state.colorPicker) {
+      if (colorPicker) {
         e.preventDefault();
+
         return null;
       }
 
@@ -380,7 +445,7 @@ class MessageInput extends React.Component {
           command={aliasFilter}
           onItemChange={this.onItemChange}
         >
-          <Container direction="row" className="message-input-container">
+          <EditorBox>
             <Editor
               autoFocus
               ref={this.editorRef}
@@ -400,7 +465,7 @@ class MessageInput extends React.Component {
               onSelect={this.insertEmoji}
               className="message-input-emojipicker"
             />
-          </Container>
+          </EditorBox>
         </AliasPicker>
       </ColorPicker>
     );
