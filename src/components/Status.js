@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Settings, Keyboard } from './Icons';
 
 const StatusContainer = styled.div`
+  font-size: 2rem;
   height: 38px;
   width: 100%;
   padding-left: 5px;

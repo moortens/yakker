@@ -1,67 +1,98 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import propTypes from 'prop-types';
+import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-import Container from './Container';
-import { Hashtag, Exclamation, Local, Plus } from './Icons';
-import bufferListSelector from '../selectors/buffer';
-
-import './BufferList.css';
 import { VerticalBox } from './Box';
+import { Hashtag, Exclamation, Local, Plus } from './Icons';
 
-const BufferList = () => {
-  const { channels, directs } = useSelector(bufferListSelector);
+const BufferVerticalBox = styled(VerticalBox)`
+  a {
+    font-family: monospace;
+    font-size: 1.4rem;
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+    box-sizing: border-box;
+    color: #9a8c98;
+    text-decoration: none;
+  }
 
-  const generateList = (buffer, channel = false) => {
-    const channelTypes = {
-      '#': <Hashtag />,
-      '!': <Exclamation />,
-      '&': <Local />,
-      '+': <Plus />,
-    };
+  a:hover {
+    background-color: #546a7b;
+    border-radius: 3px;
+    color: #fff;
+  }
 
-    return buffer.map(({ name, bid: id }) => {
-      const pathname = channel
-        ? `/channel/${name.substring(1)}`
-        : `/message/${name}`;
+  a.active {
+    background-color: #4a4e69;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #dbf9f4;
+  }
+`;
 
-      return (
-        <NavLink
-          to={{
-            pathname,
-            state: { bid: id, name },
-          }}
-          key={name}
-          className="channel-list"
-        >
-          {channel && channelTypes[name.charAt(0)]}
-          <span>{channel ? name.substring(1) : name}</span>
-        </NavLink>
-      );
-    });
+const BufferText = styled.span`
+  font-size: 1.4rem;
+`;
+
+const BufferIcon = ({ name }) => {
+  const channelTypes = {
+    '#': Hashtag,
+    '!': Exclamation,
+    '&': Local,
+    '+': Plus,
   };
 
-  return (
-    <div className="channel-list-container">
-      {channels.length > 0 && (
-        <>
-          <div className="channel-list-header">Channels:</div>
-          <VerticalBox>
-            {generateList(channels, true)}
-          </VerticalBox>
-        </>
-      )}
+  const Type = channelTypes[name.charAt(0)];
 
-      {directs.length > 0 && (
-        <>
-          <div className="channel-list-header">Direct messages:</div>
-          <VerticalBox>
-            {generateList(directs)}
-          </VerticalBox>
-        </>
-      )}
-    </div>
+  if (Type) {
+    return <Type />;
+  }
+
+  return null;
+};
+
+const BufferList = ({ buffers, channel }) => {
+  if (!buffers.length) {
+    return null;
+  }
+
+  return (
+    <BufferVerticalBox>
+      {buffers.map(({ name, bid: id }) => {
+        const pathname = channel
+          ? `/channel/${name.substring(1)}`
+          : `/message/${name}`;
+
+        return (
+          <NavLink
+            to={{
+              pathname,
+              state: { bid: id, name },
+            }}
+            key={name}
+          >
+            <BufferIcon name={name} />
+            <BufferText>{channel ? name.substring(1) : name}</BufferText>
+          </NavLink>
+        );
+      })}
+    </BufferVerticalBox>
   );
+};
+
+BufferList.propTypes = {
+  buffers: propTypes.arrayOf(propTypes.object).isRequired,
+  channel: propTypes.bool,
+};
+
+BufferIcon.propTypes = {
+  name: propTypes.string.isRequired,
+};
+
+BufferList.defaultProps = {
+  channel: false,
 };
 
 export default BufferList;

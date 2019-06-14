@@ -2,7 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { Header } from './Typography';
+import bufferListSelector from '../selectors/buffer';
+import { Header, SubTitle } from './Typography';
 import { VerticalBox } from './Box';
 import BufferList from './BufferList';
 import Status from './Status';
@@ -20,6 +21,7 @@ const SidebarBox = styled(VerticalBox)`
 
 export default () => {
   const network = useSelector(state => state.server.network);
+  const { channels, directs } = useSelector(bufferListSelector);
 
   return (
     <SidebarBox>
@@ -28,7 +30,19 @@ export default () => {
           {network}
         </Header>
       )}
-      <BufferList />
+      {channels.length > 0 && (
+        <>
+          <SubTitle color="heading">Channels:</SubTitle>
+          <BufferList buffers={channels} channel />
+        </>
+      )}
+
+      {directs.length > 0 && (
+        <>
+          <SubTitle color="heading">Direct messages:</SubTitle>
+          <BufferList buffers={directs} />
+        </>
+      )}
       <Status />
     </SidebarBox>
   );

@@ -3,6 +3,7 @@ const defaultTheme = {
     primary: '#333333',
     secondary: '#ffffff',
     sidebar: '#031D44',
+    heading: '#4A4E69',
     button: {
       disabled: '#333333',
       hover: '#999999',
