@@ -3,7 +3,7 @@ import { typography, color, compose, space } from 'styled-system';
 
 export const Header = styled.header(
   {
-    fontSize: '32px',
+    fontSize: '3.2rem',
   },
   compose(
     typography,
@@ -14,7 +14,7 @@ export const Header = styled.header(
 
 export const Title = styled.div(
   {
-    fontSize: '18px',
+    fontSize: '1.8rem',
   },
   compose(
     typography,
@@ -25,7 +25,7 @@ export const Title = styled.div(
 
 export const SubTitle = styled.span(
   {
-    fontSize: '14px',
+    fontSize: '1.4rem',
   },
   compose(
     typography,

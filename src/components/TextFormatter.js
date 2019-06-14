@@ -1,12 +1,75 @@
 import React, { useRef, useEffect } from 'react';
 import propTypes from 'prop-types';
-import classnames from 'classnames';
 import Img from 'react-image';
 import uniqBy from 'lodash/uniqBy';
 import LinkifyIt from 'linkify-it';
 import twemoji from 'twemoji';
 
-import './TextFormatter.css';
+import styled from 'styled-components';
+
+const StyledText = styled.span`
+  font-size: inherit;
+  font-family: ${({ monospace }) =>
+    monospace ? 'monospace' : "'Roboto', sans-serif"};
+  font-weight: ${({ bold }) => (bold ? 'bold' : 'none')};
+  text-decoration: ${({ underline, strikethrough }) => {
+    if (strikethrough) {
+      return 'strikethrough';
+    }
+    return underline ? 'underline' : 'none';
+  }};
+  font-style: ${({ italic }) => (italic ? 'italic' : 'none')};
+  background-color: ${({ background, monospace, theme }) => {
+    if (monospace) {
+      return '#ececec';
+    }
+    return theme.colors.irc[background] || 'inherit';
+  }}
+  color: ${({ foreground, theme }) => theme.colors.irc[foreground] || 'inherit'}
+  ${({ monospace }) =>
+    monospace &&
+    `
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px;
+      margin-right: 5px;
+  `}
+`;
+
+const StyledLink = styled.span`
+  text-decoration: none;
+  color: inherit;
+  background-color: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  font-size: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const Text = styled.div`
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.4rem;
+
+  img.emoji {
+    font-size: inherit;
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+  }
+`;
+
+const StyledImage = styled.div`
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 3px;
+  max-width: 300px;
+  max-height: 300px;
+`;
 
 const getBlockType = char => {
   switch (char) {
@@ -117,15 +180,14 @@ const buildContentLinks = content => {
 
       children = [
         ...children,
-        <a
+        <StyledLink
           target="_blank"
           rel="noreferrer noopener"
-          className="text-link"
           href={match.url}
           title={match.url}
         >
           {match.raw}
-        </a>,
+        </StyledLink>,
       ];
 
       index = match.lastIndex;
@@ -153,7 +215,9 @@ const buildImagePreview = urls => {
     if (imageRe.test(match.url)) {
       images = [
         ...images,
-        <Img className="text-image" src={match.url} alt={match.raw} />,
+        <StyledImage>
+          <Img src={match.url} alt={match.raw} />
+        </StyledImage>,
       ];
     }
   });
@@ -161,14 +225,12 @@ const buildImagePreview = urls => {
   return images;
 };
 
-const TextFormatter = ({ text, embed, ...props }) => {
+const TextFormatter = ({ text, embed }) => {
   const emojiRef = useRef();
 
   useEffect(() => {
     // Provides support for the standard Unicode emojis
-    twemoji.parse(emojiRef.current, {
-      className: 'text-emoji',
-    });
+    twemoji.parse(emojiRef.current);
   }, [emojiRef]);
 
   const blocks = buildStyleBlocks(text);
@@ -185,27 +247,19 @@ const TextFormatter = ({ text, embed, ...props }) => {
       underline,
       monospace,
       strikethrough,
-      color,
       data: { foreground, background },
       next,
     } = data;
 
-    const styles = {
-      'text-bold': bold,
-      'text-italic': italic,
-      'text-underline': underline,
-      'text-monospace': monospace,
-      'text-strikethrough': strikethrough,
+    const props = {
+      bold,
+      italic,
+      underline,
+      monospace,
+      strikethrough,
+      foreground,
+      background,
     };
-
-    if (color === true) {
-      if (foreground) {
-        styles[`foreground-${foreground}`] = true;
-      }
-      if (background) {
-        styles[`background-${background}`] = true;
-      }
-    }
 
     const [urls, children] = buildContentLinks(content);
     const images = buildImagePreview(urls);
@@ -213,7 +267,7 @@ const TextFormatter = ({ text, embed, ...props }) => {
     return [
       images,
       <>
-        <span className={classnames('text-container', styles)}>{children}</span>
+        <StyledText {...props}>{children}</StyledText>
         {formatter(next)}
       </>,
     ];
@@ -223,8 +277,8 @@ const TextFormatter = ({ text, embed, ...props }) => {
 
   return (
     <>
-    <div ref={emojiRef} className={props.className}>{children}</div>
-    {embed && images}
+      <Text ref={emojiRef}>{children}</Text>
+      {embed && images}
     </>
   );
 };

@@ -1,20 +1,39 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { Settings, Keyboard } from './Icons';
 
-import './Status.css';
+const StatusContainer = styled.div`
+  height: 38px;
+  width: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: ${({ theme }) => theme.colors.secondary};
+  line-height: 38px;
+  text-align: left;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    padding-right: 5px;
+
+    &:hover {
+      color: black;
+    }
+  }
+`;
 
 const Status = () => {
   return (
-    <div className="status-container">
+    <StatusContainer>
       <Link to="/settings">
         <Settings />
       </Link>
       <Link to="/shortcuts">
         <Keyboard />
       </Link>
-    </div>
+    </StatusContainer>
   );
 };
 

@@ -14,8 +14,6 @@ import Sidebar from './Sidebar';
 import Buffer from './Buffer';
 import KeyBindings from './KeyBindings';
 
-import './App.css';
-
 const App = ({ history }) => {
   const status = useSelector(state => state.server.status);
   const channels = useSelector(state => Object.keys(state.channels.ids).length);
