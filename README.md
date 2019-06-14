@@ -8,6 +8,8 @@
 * **Made for smaller networks.** Don't know which channels to join? Well, lets give you a channel list when you connect :boom:
 * **Threads.** IRCv3 has a draft, so... :sparkles:
 * **Emojis:exclamation:** Yeah, everyone has those now, but :cool:...
+* **Delivery confirmation**: Your messages actually confirm their arrival, if certain fancy IRCv3 sorcery is present! :smirk:
+* **Typing notifications**: Your friends are writing! :abcd:
 * **Runs on any web server.** It's just a couple of static files, no daemon, fancy requirements or anything :floppy_disk:
 
 ### Development
