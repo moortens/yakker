@@ -1,8 +1,32 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import styled, { keyframes } from 'styled-components';
 
-import './TypingIndicator.css';
+import { HorizontalBox } from './Box';
+
+const expand = keyframes`
+  from {
+    letter-spacing: normal;
+  }
+
+  to {
+    letter-spacing: 2px;
+  }
+`;
+
+const AnimatedTypingDots = styled.span`
+  letter-spacing: normal;
+  animation-duration: 1s;
+  animation-name: ${expand};
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+`;
+
+const TypingText = styled.div`
+  font-size: 1.2rem;
+  color: ${({ theme }) => theme.colors.typing};
+`;
 
 const TypingIndicator = ({ bid }) => {
   const typings = useSelector(state => {
@@ -39,14 +63,14 @@ const TypingIndicator = ({ bid }) => {
   };
 
   return (
-    <div className="typing-container">
+    <HorizontalBox>
       {typings.length !== 0 && (
-        <div className="typing-text">
-          <span>{getUniqueNickString()}</span>
-          <span className="typing-animation" />
-        </div>
+        <TypingText>
+          {getUniqueNickString()}
+          <AnimatedTypingDots />
+        </TypingText>
       )}
-    </div>
+    </HorizontalBox>
   );
 };
 

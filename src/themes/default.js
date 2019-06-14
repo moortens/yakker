@@ -7,6 +7,8 @@ const defaultTheme = {
       secondary: '#999999',
     },
 
+    typing: '#999999',
+    
     secondary: '#ffffff',
     sidebar: '#031D44',
     heading: '#4A4E69',
