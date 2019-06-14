@@ -1,11 +1,16 @@
 import React from 'react';
 
-import './Loading.css';
+import { FullScreenBox, FixedBox } from './Box';
+import { Header } from './Typography';
 
 const Loading = () => (
-  <div className="loading">
-    Monkeys are attempting to establish communication channels...
-  </div>
+  <FullScreenBox>
+    <FixedBox>
+      <Header color="secondary" textAlign="center">
+        Monkeys are attempting to establish communication channels
+      </Header>
+    </FixedBox>
+  </FullScreenBox>
 );
 
 export default Loading;

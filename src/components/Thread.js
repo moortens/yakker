@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 
 import { bufferThreadMessageSelector } from '../selectors/message';
 import { Close } from './Icons';
-import Action from './Action';
+import Button from './Button';
 import MessageInput from './MessageInput';
 import Container from './Container';
 import ThreadList from './ThreadList';
@@ -66,9 +66,9 @@ const Thread = ({
           <div className="thread-header-text">Thread in #dev</div>
           <div className="thread-header-nicks">{getUniqueNickString()}</div>
           <div className="thread-header-actions">
-            <Action onClickEvent={() => history.goBack()}>
+            <Button onClick={() => history.goBack()}>
               <Close />
-            </Action>
+            </Button>
           </div>
         </div>
         <Container

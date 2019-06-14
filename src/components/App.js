@@ -5,7 +5,7 @@ import { Route, withRouter } from 'react-router-dom';
 
 import useHotKey from './hooks/useHotKey';
 
-import Container from './Container';
+import { HorizontalBox } from './Box';
 import ChanList from './ChanList';
 import Settings from './Settings';
 import Network from './Network';
@@ -44,14 +44,14 @@ const App = ({ history }) => {
   }
 
   return (
-    <Container direction="row">
+    <HorizontalBox>
       <Sidebar />
       <Route component={Buffer} path="/channel/:channel" />
       <Route component={Buffer} path="/message/:nickname" exact />
       <Route component={ChanList} path="/channels" />
       <Route component={Settings} path="/settings" />
       <Route component={KeyBindings} path="/shortcuts" />
-    </Container>
+    </HorizontalBox>
   );
 };
 

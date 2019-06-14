@@ -20,3 +20,11 @@ export const setCurrentBuffer = bid => ({
     bid,
   },
 });
+
+export const setBufferLastReadMessage = (bid, lastReadMessage) => ({
+  type: 'BUFFER_SET_LAST_READ_MESSAGE',
+  payload: {
+    bid,
+    lastReadMessage,
+  },
+});

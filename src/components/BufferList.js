@@ -7,6 +7,7 @@ import { Hashtag, Exclamation, Local, Plus } from './Icons';
 import bufferListSelector from '../selectors/buffer';
 
 import './BufferList.css';
+import { VerticalBox } from './Box';
 
 const BufferList = () => {
   const { channels, directs } = useSelector(bufferListSelector);
@@ -45,16 +46,18 @@ const BufferList = () => {
       {channels.length > 0 && (
         <>
           <div className="channel-list-header">Channels:</div>
-          <Container direction="column">
+          <VerticalBox>
             {generateList(channels, true)}
-          </Container>
+          </VerticalBox>
         </>
       )}
 
       {directs.length > 0 && (
         <>
           <div className="channel-list-header">Direct messages:</div>
-          <Container direction="column">{generateList(directs)}</Container>
+          <VerticalBox>
+            {generateList(directs)}
+          </VerticalBox>
         </>
       )}
     </div>

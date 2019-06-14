@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Dropdown from 'react-dropdown';
+import styled from 'styled-components';
+import { layout } from 'styled-system';
 
 import { setCache } from 'actions/cache';
 import { connectToNetwork } from 'actions/irc';
+import { VerticalBox, HorizontalBox, FullScreenBox, FixedBox } from './Box';
+import Button from './Button';
 
-import Container from './Container';
-import Action from './Action';
 import './Network.css';
 
 const Network = () => {
@@ -35,18 +37,12 @@ const Network = () => {
   };
 
   return (
-    <div className="modal">
-      <div className="network-modal">
-        <Container
-          direction="column"
-          style={{
-            justifyContent: 'space-between',
-            height: '100%',
-          }}
-        >
+    <FullScreenBox>
+      <FixedBox size="network-container">
+        <VerticalBox justifyContent="space-between" height="100%">
           <div className="network-header">Hello you!</div>
 
-          <Container direction="column">
+          <VerticalBox>
             {networks.length > 1 && (
               <>
                 <div style={{ fontSize: '18px', color: 'white' }}>
@@ -70,27 +66,19 @@ const Network = () => {
               value={nickname}
               placeholder="nickname..."
             />
-          </Container>
+          </VerticalBox>
 
-          <Container
-            direction="row"
-            style={{
-              justifyContent: 'space-between',
-              width: '100%',
-            }}
-          >
-            <Action onClick={() => null}>
-              <span style={{ textDecoration: 'underline', color: 'white' }}>
-                Advanced...
-              </span>
-            </Action>
-            <button className="network-connect" type="button" onClick={connect}>
+          <HorizontalBox justifyContent="space-between">
+            <Button color="#fff" onClick={() => null}>
+              Advanced...
+            </Button>
+            <Button color="#fff" onClick={connect}>
               Go
-            </button>
-          </Container>
-        </Container>
-      </div>
-    </div>
+            </Button>
+          </HorizontalBox>
+        </VerticalBox>
+      </FixedBox>
+    </FullScreenBox>
   );
 };
 

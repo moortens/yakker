@@ -18,6 +18,7 @@ const MessageList = ({ bid, match, history }) => {
     [bid],
   );
   const { embedUntrustedImages } = useSelector(state => state.settings);
+  
   const scrollElm = useRef(null);
 
   useEffect(() => {
@@ -71,6 +72,10 @@ const MessageList = ({ bid, match, history }) => {
 
         if (!Message) {
           return null;
+        }
+
+        if (idx === messages.length - 1) {
+          console.log("dispatch")
         }
 
         return (

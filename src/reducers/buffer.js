@@ -8,6 +8,7 @@ const bufferState = {
   bid: null,
   name: null,
   channel: false,
+  lastReadMessage: null,
 };
 
 export default (state = initialState, action) => {
@@ -39,6 +40,21 @@ export default (state = initialState, action) => {
 
       return Object.assign({}, state, {
         current: bid,
+      });
+    }
+
+    case 'BUFFER_SET_LAST_READ_MESSAGE': {
+      const { bid, lastReadMessage } = payload;
+
+      return Object.assign({}, state, {
+        ...state,
+        entities: {
+          ...state.entities,
+          [bid]: Object.assign({}, bufferState, {
+            ...state.entities[bid],
+            lastReadMessage,
+          }),
+        },
       });
     }
 
