@@ -1,4 +1,13 @@
 const defaultTheme = {
+  keybindings: {
+    colors: {
+      outset: '#dddddd',
+      shadow: '#cccccc',
+      background: '#ececec',
+    },
+    darken: 0.1,
+  },
+  
   colors: {
     primary: '#333333',
 
@@ -12,6 +21,8 @@ const defaultTheme = {
       background: '#ececec',
       border: '#cccccc',
     },
+
+    
 
     typing: '#999999',
 
