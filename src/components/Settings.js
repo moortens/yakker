@@ -4,8 +4,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Container from './Container';
-
 import {
   setSettingsAutoConnectOnLoad,
   setSettingsAutoJoinPreviousChannels,
@@ -19,7 +17,8 @@ import {
   setSettingsShareTypingStatus,
 } from '../actions/settings';
 
-import './Settings.css';
+import { VerticalBox } from './Box';
+import { Header, SubTitle } from './Typography';
 
 const Settings = () => {
   const [notification, setNotification] = useState('disabled');
@@ -58,10 +57,10 @@ const Settings = () => {
   };
 
   return (
-    <Container direction="column">
-      <header className="settings-header">Settings</header>
+    <VerticalBox>
+      <Header>Settings</Header>
 
-      <div className="settings-account">Account</div>
+      <SubTitle>Account</SubTitle>
       <label>
         <input
           type="checkbox"
@@ -95,7 +94,7 @@ const Settings = () => {
         Automatically rejoin the channels you were in last
       </label>
 
-      <div className="settings-account">Messages</div>
+      <SubTitle>Messages</SubTitle>
       <label>
         <input
           type="checkbox"
@@ -137,7 +136,7 @@ const Settings = () => {
         Share typing status
       </label>
 
-      <div className="settings-account">Notifications</div>
+      <SubTitle>Notifications</SubTitle>
 
       {notification === 'denied' && <div>You denied notifications</div>}
       {notification === 'default' && (
@@ -180,7 +179,7 @@ const Settings = () => {
         />
         Notify on every message
       </label>
-    </Container>
+    </VerticalBox>
   );
 };
 
