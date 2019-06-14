@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Dropdown from 'react-dropdown';
-import styled from 'styled-components';
-import { layout } from 'styled-system';
 
 import { setCache } from 'actions/cache';
 import { connectToNetwork } from 'actions/irc';
