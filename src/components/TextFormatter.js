@@ -33,12 +33,12 @@ const foregroundColor = ({ foreground, theme }) =>
 
 const StyledText = styled.span`
   font-size: inherit;
-  font-family: ${props => fontFamily(props)};
-  font-weight: ${props => fontWeight(props)};
-  text-decoration: ${props => textDecoration(props)};
-  font-style: ${props => fontStyle(props)};
-  background-color: ${props => backgroundColor(props)};
-  color: ${props => foregroundColor(props)};
+  font-family: ${fontFamily};
+  font-weight: ${fontWeight};
+  text-decoration: ${textDecoration};
+  font-style: ${fontStyle};
+  background-color: ${backgroundColor};
+  color: ${foregroundColor};
 
   ${({ monospace }) =>
     monospace &&
