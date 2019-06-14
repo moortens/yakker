@@ -1,6 +1,12 @@
 const defaultTheme = {
   colors: {
     primary: '#333333',
+
+    header: {
+      primary: '#333333',
+      secondary: '#999999',
+    },
+
     secondary: '#ffffff',
     sidebar: '#031D44',
     heading: '#4A4E69',
