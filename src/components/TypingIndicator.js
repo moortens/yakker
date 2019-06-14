@@ -16,6 +16,9 @@ const expand = keyframes`
 `;
 
 const AnimatedTypingDots = styled.span`
+  ::before {
+    content: '...';
+  }
   letter-spacing: normal;
   animation-duration: 1s;
   animation-name: ${expand};
@@ -24,8 +27,14 @@ const AnimatedTypingDots = styled.span`
 `;
 
 const TypingText = styled.div`
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: ${({ theme }) => theme.colors.typing};
+`;
+
+const TypingBox = styled(HorizontalBox)`
+  margin-left: 15px;
+  margin-right: 15px;
+  height: 20px;
 `;
 
 const TypingIndicator = ({ bid }) => {
@@ -63,14 +72,14 @@ const TypingIndicator = ({ bid }) => {
   };
 
   return (
-    <HorizontalBox>
+    <TypingBox>
       {typings.length !== 0 && (
         <TypingText>
           {getUniqueNickString()}
           <AnimatedTypingDots />
         </TypingText>
       )}
-    </HorizontalBox>
+    </TypingBox>
   );
 };
 
