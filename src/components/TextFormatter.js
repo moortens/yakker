@@ -28,7 +28,7 @@ const backgroundColor = ({ background, monospace, theme }) => {
 
 const fontStyle = ({ italic }) => (italic ? 'italic' : 'none');
 
-const color = ({ foreground, theme }) =>
+const foregroundColor = ({ foreground, theme }) =>
   theme.colors.irc[foreground] || 'inherit';
 
 const StyledText = styled.span`
@@ -38,7 +38,7 @@ const StyledText = styled.span`
   text-decoration: ${props => textDecoration(props)};
   font-style: ${props => fontStyle(props)};
   background-color: ${props => backgroundColor(props)};
-  color: ${props => color(props)};
+  color: ${props => foregroundColor(props)};
 
   ${({ monospace }) =>
     monospace &&
