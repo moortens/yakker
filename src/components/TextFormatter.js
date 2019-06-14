@@ -7,25 +7,39 @@ import twemoji from 'twemoji';
 
 import styled from 'styled-components';
 
+const fontWeight = ({ bold }) => (bold ? 'bold' : 'none');
+
+const fontFamily = ({ monospace }) =>
+  monospace ? 'monospace' : "'Roboto', sans-serif";
+
+const textDecoration = ({ underline, strikethrough }) => {
+  if (strikethrough) {
+    return 'strikethrough';
+  }
+  return underline ? 'underline' : 'none';
+};
+
+const backgroundColor = ({ background, monospace, theme }) => {
+  if (monospace) {
+    return '#ececec';
+  }
+  return theme.colors.irc[background] || 'inherit';
+};
+
+const fontStyle = ({ italic }) => (italic ? 'italic' : 'none');
+
+const color = ({ foreground, theme }) =>
+  theme.colors.irc[foreground] || 'inherit';
+
 const StyledText = styled.span`
   font-size: inherit;
-  font-family: ${({ monospace }) =>
-    monospace ? 'monospace' : "'Roboto', sans-serif"};
-  font-weight: ${({ bold }) => (bold ? 'bold' : 'none')};
-  text-decoration: ${({ underline, strikethrough }) => {
-    if (strikethrough) {
-      return 'strikethrough';
-    }
-    return underline ? 'underline' : 'none';
-  }};
-  font-style: ${({ italic }) => (italic ? 'italic' : 'none')};
-  background-color: ${({ background, monospace, theme }) => {
-    if (monospace) {
-      return '#ececec';
-    }
-    return theme.colors.irc[background] || 'inherit';
-  }}
-  color: ${({ foreground, theme }) => theme.colors.irc[foreground] || 'inherit'}
+  font-family: ${props => fontFamily(props)};
+  font-weight: ${props => fontWeight(props)};
+  text-decoration: ${props => textDecoration(props)};
+  font-style: ${props => fontStyle(props)};
+  background-color: ${props => backgroundColor(props)};
+  color: ${props => color(props)};
+
   ${({ monospace }) =>
     monospace &&
     `
@@ -247,6 +261,7 @@ const TextFormatter = ({ text, embed }) => {
       underline,
       monospace,
       strikethrough,
+      color,
       data: { foreground, background },
       next,
     } = data;
@@ -257,9 +272,12 @@ const TextFormatter = ({ text, embed }) => {
       underline,
       monospace,
       strikethrough,
-      foreground,
-      background,
     };
+
+    if (color) {
+      props.foreground = foreground;
+      props.background = background;
+    }
 
     const [urls, children] = buildContentLinks(content);
     const images = buildImagePreview(urls);
