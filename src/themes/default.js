@@ -7,7 +7,21 @@ const defaultTheme = {
     },
     darken: 0.1,
   },
-  
+  sidebar: {
+    colors: {
+      primary: '#4a4e69',
+      secondary: '#9a8c98',
+      background: '#031d44',
+      active: {
+        background: '#4a4e69',
+        color: '#dbf9f4',
+      },
+      hover: {
+        background: '#546a7b',
+        color: '#ffffff',
+      },
+    },
+  },
   colors: {
     primary: '#333333',
 
@@ -22,10 +36,7 @@ const defaultTheme = {
       border: '#cccccc',
     },
 
-    
-
     typing: '#999999',
-
     secondary: '#ffffff',
     sidebar: '#031D44',
     heading: '#4A4E69',

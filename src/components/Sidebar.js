@@ -9,14 +9,19 @@ import BufferList from './BufferList';
 import Status from './Status';
 
 const SidebarBox = styled(VerticalBox)`
-  background-color: ${({ theme }) => theme.colors.sidebar};
-  color: ${({ theme }) => theme.colors.secondary};
+  background-color: ${({ theme }) => theme.sidebar.colors.background};
+  color: ${({ theme }) => theme.sidebar.colors.secondary};
   width: 260px;
   height: 100vh;
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;
   flex-direction: column;
+`;
+
+const BufferBox = styled.div`
+  color: ${({ theme }) => theme.sidebar.colors.primary}
+  flex-grow: 1;
 `;
 
 export default () => {
@@ -26,23 +31,14 @@ export default () => {
   return (
     <SidebarBox>
       {network && (
-        <Header color="secondary" p={10}>
+        <Header color="secondary" p="5px">
           {network}
         </Header>
       )}
-      {channels.length > 0 && (
-        <>
-          <SubTitle color="heading">Channels:</SubTitle>
-          <BufferList buffers={channels} channel />
-        </>
-      )}
-
-      {directs.length > 0 && (
-        <>
-          <SubTitle color="heading">Direct messages:</SubTitle>
-          <BufferList buffers={directs} />
-        </>
-      )}
+      <BufferBox>
+        {channels.length > 0 && <BufferList buffers={channels} channel />}
+        {directs.length > 0 && <BufferList buffers={directs} />}
+      </BufferBox>
       <Status />
     </SidebarBox>
   );
