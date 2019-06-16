@@ -5,7 +5,7 @@ import {
   addChannelMember,
   removeChannelMember,
 } from '../../actions/channel';
-import { setUserlistUser } from '../../actions/userlist';
+import { setUserlistUser, renameUserlistUser } from '../../actions/userlist';
 import addMessage from '../../actions/message';
 
 export default ({ client, dispatch }) => {
@@ -133,11 +133,43 @@ export default ({ client, dispatch }) => {
     );
   };
 
+  const onNickEvent = e => {
+    const { nick, new_nick: newNick, time } = e;
+
+    const type = 'nick';
+
+    const id = uuid();
+    const uid = getUidByNick(nick);
+
+    if (!uid) {
+      return;
+    }
+
+    const buffers = client.getCommonBuffers(uid);
+    const timestamp = new Date(time) || new Date();
+
+    dispatch(renameUserlistUser(uid, nick, newNick));
+    buffers.forEach(bid => {
+      dispatch(
+        addMessage({
+          id,
+          uid,
+          bid,
+          nick,
+          type,
+          timestamp,
+          data: newNick,
+        }),
+      );
+    });
+  };
+
   return {
     join: onJoinEvent,
     part: onPartEvent,
     quit: onQuitEvent,
     away: onAwayEvent,
     back: onBackEvent,
+    nick: onNickEvent,
   };
 };

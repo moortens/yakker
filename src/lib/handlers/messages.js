@@ -11,7 +11,7 @@ export default ({ client, dispatch }) => {
     clearTypingState,
     getBufferIdFromTarget,
     getUidByNick,
-    shouldNotifyOnPrivateMessage,
+    shouldNotifyOnPrivateMessages,
     shouldNotifyOnAllMessages,
     shouldNotifyOnMentions,
     spawnNativeNotification,
@@ -89,7 +89,7 @@ export default ({ client, dispatch }) => {
         dispatch(addBuffer(bid, target));
       }
 
-      if (shouldNotifyOnPrivateMessage()) {
+      if (shouldNotifyOnPrivateMessages()) {
         spawnNativeNotification({
           title: `Private message from ${nick}`,
           body: data,

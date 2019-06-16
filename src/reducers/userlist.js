@@ -47,7 +47,28 @@ const userlistReducer = (state = initialState, action) => {
     }
 
     case USERLIST_RENAME_USER: {
-      return state;
+      const { uid, old, nick } = payload;
+
+      return Object.assign(
+        state,
+        {},
+        {
+          ...state,
+          ids: {
+            ...Object.fromEntries(
+              Object.entries(state.ids).filter(([key]) => key !== old),
+            ),
+            [nick]: uid,
+          },
+          entities: {
+            ...state.entities,
+            [uid]: {
+              ...state.entities[uid],
+              nick,
+            },
+          },
+        },
+      );
     }
 
     case USERLIST_REMOVE_USER: {
