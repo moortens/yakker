@@ -21,9 +21,18 @@ export default ({ dispatch }) => {
        * inspircd/unreal. These are used for badges to indicate moderated
        * or key/invite only channels.
        */
-      let [, modes = '', topic] = /^(?:\[\+([^\]]+)\] ?)?([^$]+)$/.exec(data);
+      let modes = [];
+      let topic = null;
 
-      modes = modes.replace(/\s<[^>]+>/g, '').split('');
+      const modeRegExp = /^(?:\[\+([^\]]+)\] ?)?([^$]+)$/;
+      if (modeRegExp.test(data)) {
+        const [, matchedModes = '', matchedTopic] = modeRegExp.exec(data);
+
+        modes = matchedModes.replace(/\s<[^>]+>/g, '').split('');
+        topic = matchedTopic;
+      } else {
+        topic = data;
+      }
 
       topic = topic.replace(
         // eslint-disable-next-line no-control-regex
