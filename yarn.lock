@@ -5291,7 +5291,8 @@ ipaddr.js@1.9.0, ipaddr.js@^1.9.0:
 
 irc-framework@kiwiirc/irc-framework:
   version "4.3.0"
-  resolved "https://codeload.github.com/kiwiirc/irc-framework/tar.gz/964b7df705eca5ce192ebadd65cd88145dc481af"
+  uid "806f2f127071eb981daa62fdda712b876308cc1b"
+  resolved "https://codeload.github.com/kiwiirc/irc-framework/tar.gz/806f2f127071eb981daa62fdda712b876308cc1b"
   dependencies:
     core-js "^3.0.1"
     eventemitter3 "^2.0.2"
