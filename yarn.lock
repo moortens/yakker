@@ -9886,10 +9886,10 @@ styled-components@^4.3.1:
     stylis-rule-sheet "^0.0.10"
     supports-color "^5.5.0"
 
-styled-system@^5.0.6:
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-5.0.6.tgz#4bb27ba59be4a92e44e78d92eb950a65973bfec3"
-  integrity sha512-rru9Pw04Bv1fOVRGuodu4jv02tlY6pKqawfRCWDvuwXISbq6eMA+1y0ldOfxZPoQUkug+DwEL9oJ4zYCGMXXSQ==
+styled-system@^5.0.10:
+  version "5.0.10"
+  resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-5.0.10.tgz#1f80d53069dcfffa6fba9edb2272e66ff04c7f0c"
+  integrity sha512-HW072ayyFV0yTyk2qjD0PL6TLV6w6emM2YjMtuxBjB8eEG+hKjZGBQktcdGOdUbcyTBO/vTXtynRIeGB3KBXaQ==
   dependencies:
     "@styled-system/background" "^5.0.5"
     "@styled-system/border" "^5.0.5"
