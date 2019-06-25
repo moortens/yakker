@@ -34,7 +34,7 @@
     "redux": "^4.0.1",
     "reselect": "^4.0.0",
     "slate": "^0.47.4",
-    "slate-react": "^0.22.3",
+    "slate-react": "^0.22.4",
     "styled-components": "^4.3.1",
     "styled-system": "^5.0.10",
     "twemoji": "^12.0.4",
