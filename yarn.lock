@@ -4276,6 +4276,11 @@ fast-levenshtein@~2.0.4:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
+fast-text-encoding@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fast-text-encoding/-/fast-text-encoding-1.0.0.tgz#3e5ce8293409cfaa7177a71b9ca84e1b1e6f25ef"
+  integrity sha512-R9bHCvweUxxwkDwhjav5vxpFvdPGlVngtqmx4pIZfSUhM/Q4NiIUHB456BAf+Q1Nwu3HEZYONtu+Rya+af4jiQ==
+
 faye-websocket@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.10.0.tgz#4e492f8d04dfb6f89003507f6edbf2d501e7c6f4"
@@ -4723,6 +4728,11 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   version "4.1.15"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
   integrity sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
+
+grapheme-splitter@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
+  integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 growly@^1.3.0:
   version "1.3.0"
@@ -5282,15 +5292,18 @@ ipaddr.js@1.9.0, ipaddr.js@^1.9.0:
   integrity sha512-M4Sjn6N/+O6/IXSJseKqHoFc+5FdGJ22sXqnjTpdZweHK64MzEPAyQZyEU3R/KRv2GLoa7nNtg/C2Ev6m7z+eA==
 
 irc-framework@kiwiirc/irc-framework:
-  version "4.3.0"
-  resolved "https://codeload.github.com/kiwiirc/irc-framework/tar.gz/964b7df705eca5ce192ebadd65cd88145dc481af"
+  version "4.4.0"
+  uid a96c42a8702a899b6300fc94b89d3e38ef7644be
+  resolved "https://codeload.github.com/kiwiirc/irc-framework/tar.gz/a96c42a8702a899b6300fc94b89d3e38ef7644be"
   dependencies:
     core-js "^3.0.1"
     eventemitter3 "^2.0.2"
+    grapheme-splitter "^1.0.4"
     iconv-lite "^0.4.24"
+    isomorphic-textencoder "^1.0.1"
     lodash "^4.17.11"
     middleware-handler "^0.2.0"
-    runes "github:kiwiirc/runes"
+    regenerator-runtime "^0.13.2"
     socksjs "^0.5.0"
 
 is-absolute-url@^2.0.0:
@@ -5616,6 +5629,13 @@ isomorphic-fetch@^2.1.1:
   dependencies:
     node-fetch "^1.0.1"
     whatwg-fetch ">=0.10.0"
+
+isomorphic-textencoder@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-textencoder/-/isomorphic-textencoder-1.0.1.tgz#38dcd3b4416d29cd33e274f64b99ae567cd15e83"
+  integrity sha512-676hESgHullDdHDsj469hr+7t3i/neBKU9J7q1T4RHaWwLAsaQnywC0D1dIUId0YZ+JtVrShzuBk1soo0+GVcQ==
+  dependencies:
+    fast-text-encoding "^1.0.0"
 
 isstream@~0.1.2:
   version "0.1.2"
@@ -9122,10 +9142,6 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
-
-"runes@github:kiwiirc/runes":
-  version "0.4.3"
-  resolved "https://codeload.github.com/kiwiirc/runes/tar.gz/a8d7f76408f38749cfec9dec7c7a1430300f2645"
 
 rxjs@^6.4.0:
   version "6.5.2"
