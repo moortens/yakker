@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
-import * as serviceWorker from './serviceWorker';
 import history from './lib/history';
 import store from './lib/store';
 import App from './components/App';
@@ -23,6 +22,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root'),
 );
-
-
-serviceWorker.unregister();
