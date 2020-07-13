@@ -12,7 +12,7 @@
     "emoji-regex": "^8.0.0",
     "history": "^4.9.0",
     "immutable": "^4.0.0-rc.12",
-    "irc-framework": "kiwiirc/irc-framework",
+    "irc-framework": "^4.9.0",
     "is-hotkey": "^0.1.4",
     "linkify-it": "^2.1.0",
     "lodash": "^4.17.11",
