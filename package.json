@@ -15,7 +15,7 @@
     "irc-framework": "kiwiirc/irc-framework",
     "is-hotkey": "^0.1.4",
     "linkify-it": "^2.1.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "polished": "^3.4.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
